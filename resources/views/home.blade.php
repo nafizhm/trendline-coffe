@@ -300,7 +300,7 @@
             <span>Bersama Trendline</span>
           </h1>
           <p style="color:rgba(255,255,255,0.7); font-size:14px; line-height:1.7; margin-bottom:24px; max-width:420px;">
-            Ngopi santai sambil belajar saham, forex, dan emas bersama komunitas trader. Dipandu langsung oleh mentor berpengalaman.
+            Ngopi santai Bro sambil belajar saham, forex, dan emas bersama komunitas trader. Dipandu langsung oleh mentor berpengalaman.
           </p>
           <div class="hero-cta flex flex-wrap gap-3 mb-6">
             <a href="#edukasi" class="btn-gold px-5 py-2.5 rounded-full font-bold text-sm shadow-lg">📚 Mulai Belajar</a>
