@@ -10,6 +10,30 @@ use Illuminate\View\View;
 
 class ArticleController extends Controller
 {
+    public function publicIndex(Request $request): View
+    {
+        $categoryKey = strtolower((string) $request->query('category'));
+        $category = blank($categoryKey)
+            ? null
+            : Category::query()
+                ->get()
+                ->first(fn (Category $category) => strtolower($category->name) === $categoryKey);
+
+        $articles = Article::query()
+            ->with('category')
+            ->where('status', 'publish')
+            ->when($category, fn ($query) => $query->where('category_id', $category->id))
+            ->orderByDesc('published_at')
+            ->latest('id')
+            ->get();
+
+        return view('public.articles.index', [
+            'articles' => $articles,
+            'categories' => Category::query()->orderBy('name')->get(),
+            'activeCategoryKey' => $categoryKey,
+        ]);
+    }
+
     public function index(): View
     {
         return view('articles.index', [
