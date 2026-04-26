@@ -1,0 +1,22 @@
+[26-Apr-2026 19:29:42 Asia/Jakarta] PHP Fatal error:  Composer detected issues in your platform: Your Composer dependencies require a PHP version ">= 8.3.0". You are running 7.4.33. in /home/pts2932/repositories/trendline-coffe/vendor/composer/platform_check.php on line 24
+[26-Apr-2026 19:39:12 Asia/Jakarta] PHP Fatal error:  Composer detected issues in your platform: Your Composer dependencies require a PHP version ">= 8.3.0". You are running 7.4.33. in /home/pts2932/repositories/trendline-coffe/vendor/composer/platform_check.php on line 24
+[26-Apr-2026 13:03:15 UTC] PHP Warning:  Module "mbstring" is already loaded in Unknown on line 0
+[26-Apr-2026 13:03:15 UTC] PHP Warning:  Module "dom" is already loaded in Unknown on line 0
+[26-Apr-2026 13:03:15 UTC] PHP Warning:  Module "PDO" is already loaded in Unknown on line 0
+[26-Apr-2026 13:03:15 UTC] PHP Warning:  Module "pdo_mysql" is already loaded in Unknown on line 0
+[26-Apr-2026 13:03:42 UTC] PHP Warning:  Module "mbstring" is already loaded in Unknown on line 0
+[26-Apr-2026 13:03:42 UTC] PHP Warning:  Module "dom" is already loaded in Unknown on line 0
+[26-Apr-2026 13:03:42 UTC] PHP Warning:  Module "PDO" is already loaded in Unknown on line 0
+[26-Apr-2026 13:03:42 UTC] PHP Warning:  Module "pdo_mysql" is already loaded in Unknown on line 0
+[26-Apr-2026 13:11:21 UTC] PHP Warning:  Module "mbstring" is already loaded in Unknown on line 0
+[26-Apr-2026 13:11:21 UTC] PHP Warning:  Module "dom" is already loaded in Unknown on line 0
+[26-Apr-2026 13:11:21 UTC] PHP Warning:  Module "PDO" is already loaded in Unknown on line 0
+[26-Apr-2026 13:11:21 UTC] PHP Warning:  Module "pdo_mysql" is already loaded in Unknown on line 0
+[26-Apr-2026 13:11:21 UTC] PHP Warning:  Module "mbstring" is already loaded in Unknown on line 0
+[26-Apr-2026 13:11:21 UTC] PHP Warning:  Module "dom" is already loaded in Unknown on line 0
+[26-Apr-2026 13:11:21 UTC] PHP Warning:  Module "PDO" is already loaded in Unknown on line 0
+[26-Apr-2026 13:11:21 UTC] PHP Warning:  Module "pdo_mysql" is already loaded in Unknown on line 0
+[26-Apr-2026 13:11:21 UTC] PHP Warning:  Module "mbstring" is already loaded in Unknown on line 0
+[26-Apr-2026 13:11:21 UTC] PHP Warning:  Module "dom" is already loaded in Unknown on line 0
+[26-Apr-2026 13:11:21 UTC] PHP Warning:  Module "PDO" is already loaded in Unknown on line 0
+[26-Apr-2026 13:11:21 UTC] PHP Warning:  Module "pdo_mysql" is already loaded in Unknown on line 0
