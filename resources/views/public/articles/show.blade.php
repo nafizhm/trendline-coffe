@@ -22,20 +22,26 @@
             </div>
 
             @if ($attachmentUrl)
-                <div class="mt-8 rounded-[28px] border border-[rgba(201,168,76,0.18)] bg-white/5 p-4">
-                    <div class="mb-4 flex items-center justify-between gap-3">
-                        <h2 class="text-lg font-black text-white">Lampiran Artikel</h2>
-                        <a href="{{ $attachmentUrl }}" target="_blank" rel="noreferrer" class="rounded-full border border-[rgba(201,168,76,0.35)] px-4 py-2 text-xs font-bold text-[#c9a84c] transition hover:bg-white/5">
-                            Buka Penuh
-                        </a>
+                @if ($isPdfAttachment)
+                    <div class="mt-8">
+                        <div class="mb-4 flex items-center justify-end">
+                            <a href="{{ $attachmentUrl }}" target="_blank" rel="noreferrer" class="rounded-full border border-[rgba(201,168,76,0.35)] px-4 py-2 text-xs font-bold text-[#c9a84c] transition hover:bg-white/5">
+                                Buka Penuh
+                            </a>
+                        </div>
+                        <iframe src="{{ $attachmentUrl }}" class="h-[85vh] w-full rounded-2xl bg-white" title="{{ $article->title }} PDF"></iframe>
                     </div>
-
-                    @if ($isPdfAttachment)
-                        <iframe src="{{ $attachmentUrl }}" class="h-[75vh] w-full rounded-2xl bg-white" title="{{ $article->title }} PDF"></iframe>
-                    @else
+                @else
+                    <div class="mt-8 rounded-[28px] border border-[rgba(201,168,76,0.18)] bg-white/5 p-4">
+                        <div class="mb-4 flex items-center justify-between gap-3">
+                            <h2 class="text-lg font-black text-white">Lampiran Artikel</h2>
+                            <a href="{{ $attachmentUrl }}" target="_blank" rel="noreferrer" class="rounded-full border border-[rgba(201,168,76,0.35)] px-4 py-2 text-xs font-bold text-[#c9a84c] transition hover:bg-white/5">
+                                Buka Penuh
+                            </a>
+                        </div>
                         <img src="{{ $attachmentUrl }}" alt="{{ $article->title }}" class="w-full rounded-2xl bg-white object-contain">
-                    @endif
-                </div>
+                    </div>
+                @endif
             @endif
         </div>
     </div>
