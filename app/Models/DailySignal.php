@@ -11,10 +11,16 @@ class DailySignal extends Model
         'symbol',
         'pair_name',
         'position',
+        'signal_date',
+        'signal_time',
         'entry_value',
         'target_value',
         'stop_value',
         'description',
         'sort_order',
+    ];
+
+    protected $casts = [
+        'signal_date' => 'date',
     ];
 }

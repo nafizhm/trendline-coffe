@@ -2,6 +2,7 @@
 
 @php
     $pageTitle = $type === 'forex' ? 'Sinyal Harian Forex' : 'Sinyal Harian Saham';
+    $makassarNow = now('Asia/Makassar');
     $oldSignals = collect(old('signals', []));
     $signalsData = $oldSignals->where('type', $type)->values();
 
@@ -11,6 +12,8 @@
             'symbol' => $signal->symbol,
             'pair_name' => $signal->pair_name,
             'position' => $signal->position,
+            'signal_date' => optional($signal->signal_date)->format('Y-m-d'),
+            'signal_time' => $signal->signal_time,
             'entry_value' => $signal->entry_value,
             'target_value' => $signal->target_value,
             'stop_value' => $signal->stop_value,
@@ -25,6 +28,8 @@
             'symbol' => '',
             'pair_name' => '',
             'position' => 'buy',
+            'signal_date' => $makassarNow->format('Y-m-d'),
+            'signal_time' => $makassarNow->format('H:i'),
             'entry_value' => '',
             'target_value' => '',
             'stop_value' => '',
@@ -95,6 +100,8 @@
                 'symbol' => '',
                 'pair_name' => '',
                 'position' => 'buy',
+                'signal_date' => '__NOW_DATE__',
+                'signal_time' => '__NOW_TIME__',
                 'entry_value' => '',
                 'target_value' => '',
                 'stop_value' => '',
@@ -107,6 +114,26 @@
     </template>
 
     <script>
+        const signalTimeZone = 'Asia/Makassar';
+
+        function getCurrentSignalDate() {
+            return new Intl.DateTimeFormat('en-CA', {
+                timeZone: signalTimeZone,
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+            }).format(new Date());
+        }
+
+        function getCurrentSignalTime() {
+            return new Intl.DateTimeFormat('en-GB', {
+                timeZone: signalTimeZone,
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false,
+            }).format(new Date());
+        }
+
         function refreshSignalIndexes(type) {
             const wrapper = document.querySelector(`[data-signal-group="${type}"]`);
             if (!wrapper) return;
@@ -125,6 +152,8 @@
                 const wrapper = document.querySelector(`[data-signal-group="${type}"]`);
                 const template = document.getElementById('signal-card-template').innerHTML
                     .replaceAll('__TYPE__', type)
+                    .replaceAll('__NOW_DATE__', getCurrentSignalDate())
+                    .replaceAll('__NOW_TIME__', getCurrentSignalTime())
                     .replaceAll('__INDEX__', wrapper.querySelectorAll('[data-signal-card]').length + 1);
 
                 wrapper.insertAdjacentHTML('beforeend', template);
@@ -144,6 +173,8 @@
                 const type = wrapper.dataset.signalGroup;
                 const template = document.getElementById('signal-card-template').innerHTML
                     .replaceAll('__TYPE__', type)
+                    .replaceAll('__NOW_DATE__', getCurrentSignalDate())
+                    .replaceAll('__NOW_TIME__', getCurrentSignalTime())
                     .replaceAll('__INDEX__', 1);
                 wrapper.insertAdjacentHTML('beforeend', template);
             }

@@ -38,6 +38,40 @@
     ->orderBy('sort_order')
     ->orderBy('id')
     ->get();
+  $formatSignalDateTime = function ($date, $time) {
+    $formattedDate = null;
+
+    if (! blank($date)) {
+      try {
+        $parsedDate = $date instanceof \Carbon\CarbonInterface
+          ? $date
+          : \Illuminate\Support\Carbon::parse($date);
+
+        $bulanIndonesia = [
+          1 => 'Januari',
+          2 => 'Februari',
+          3 => 'Maret',
+          4 => 'April',
+          5 => 'Mei',
+          6 => 'Juni',
+          7 => 'Juli',
+          8 => 'Agustus',
+          9 => 'September',
+          10 => 'Oktober',
+          11 => 'November',
+          12 => 'Desember',
+        ];
+
+        $formattedDate = $parsedDate->day . ' ' . $bulanIndonesia[$parsedDate->month] . ' ' . $parsedDate->year;
+      } catch (\Throwable $e) {
+        $formattedDate = (string) $date;
+      }
+    }
+
+    $formattedTime = ! blank($time) ? substr((string) $time, 0, 5) . ' WITA' : null;
+
+    return collect([$formattedDate, $formattedTime])->filter()->implode(' • ');
+  };
   $categoryCollection = \App\Models\Category::query()->orderBy('name')->get();
   $categoryLookup = $categoryCollection->mapWithKeys(fn ($category) => [strtolower($category->name) => $category]);
   $educationTabs = collect([
@@ -643,12 +677,18 @@
         @forelse ($forexSignals as $signal)
           <div class="signal-card p-4 rounded-xl">
             <div class="flex items-center justify-between mb-2 flex-wrap gap-2">
-              <div class="flex items-center gap-2">
+              <div class="flex items-center gap-2 flex-wrap">
                 <span style="background:rgba(201,168,76,0.15);color:#c9a84c;font-weight:900;font-size:12px;padding:3px 10px;border-radius:8px;">{{ $signal->symbol }}</span>
                 <span style="color:rgba(255,255,255,0.45);font-size:11px;">{{ $signal->pair_name }}</span>
               </div>
               <span style="display:flex;align-items:center;gap:4px;font-size:11px;font-weight:700;color:{{ $signal->position === 'buy' ? '#4ade80' : '#f87171' }};"><span style="width:7px;height:7px;border-radius:50%;background:{{ $signal->position === 'buy' ? '#4ade80' : '#f87171' }};display:inline-block;"></span>{{ strtoupper($signal->position) }}</span>
             </div>
+            @php($signalDateTime = $formatSignalDateTime($signal->signal_date, $signal->signal_time))
+            @if ($signalDateTime)
+              <div style="text-align:center;color:rgba(255,255,255,0.68);font-size:11px;font-weight:600;margin:-2px 0 10px;">
+                {{ $signalDateTime }}
+              </div>
+            @endif
             <div class="grid grid-cols-3 gap-2 text-center mb-2">
               <div style="background:rgba(255,255,255,0.05);border-radius:8px;padding:6px;"><div style="font-size:10px;color:rgba(255,255,255,0.45);">Entry</div><div style="font-size:13px;font-weight:700;">{{ $signal->entry_value }}</div></div>
               <div style="background:rgba(74,222,128,0.1);border-radius:8px;padding:6px;"><div style="font-size:10px;color:rgba(255,255,255,0.45);">TP</div><div style="font-size:13px;font-weight:700;color:#4ade80;">{{ $signal->target_value }}</div></div>
@@ -665,7 +705,13 @@
       <div id="signal-saham" class="hidden reveal space-y-3">
         @forelse ($stockSignals as $signal)
           <div class="signal-card p-4 rounded-xl">
-            <div class="flex items-center justify-between mb-2 flex-wrap gap-2"><div class="flex items-center gap-2"><span style="background:rgba(201,168,76,0.15);color:#c9a84c;font-weight:900;font-size:12px;padding:3px 10px;border-radius:8px;">{{ $signal->symbol }}</span><span style="color:rgba(255,255,255,0.45);font-size:11px;">{{ $signal->pair_name }}</span></div><span style="color:{{ $signal->position === 'buy' ? '#4ade80' : '#f87171' }};font-size:11px;font-weight:700;">● {{ strtoupper($signal->position) }}</span></div>
+            <div class="flex items-center justify-between mb-2 flex-wrap gap-2"><div class="flex items-center gap-2 flex-wrap"><span style="background:rgba(201,168,76,0.15);color:#c9a84c;font-weight:900;font-size:12px;padding:3px 10px;border-radius:8px;">{{ $signal->symbol }}</span><span style="color:rgba(255,255,255,0.45);font-size:11px;">{{ $signal->pair_name }}</span></div><span style="color:{{ $signal->position === 'buy' ? '#4ade80' : '#f87171' }};font-size:11px;font-weight:700;">● {{ strtoupper($signal->position) }}</span></div>
+            @php($signalDateTime = $formatSignalDateTime($signal->signal_date, $signal->signal_time))
+            @if ($signalDateTime)
+              <div style="text-align:center;color:rgba(255,255,255,0.68);font-size:11px;font-weight:600;margin:-2px 0 10px;">
+                {{ $signalDateTime }}
+              </div>
+            @endif
             <div class="grid grid-cols-3 gap-2 text-center mb-2">
               <div style="background:rgba(255,255,255,0.05);border-radius:8px;padding:6px;"><div style="font-size:10px;color:rgba(255,255,255,0.45);">Entry</div><div style="font-size:13px;font-weight:700;">{{ $signal->entry_value }}</div></div>
               <div style="background:rgba(74,222,128,0.1);border-radius:8px;padding:6px;"><div style="font-size:10px;color:rgba(255,255,255,0.45);">Target</div><div style="font-size:13px;font-weight:700;color:#4ade80;">{{ $signal->target_value }}</div></div>
@@ -680,7 +726,7 @@
         @endforelse
       </div>
       <div class="disclaimer reveal mt-5 p-3 rounded-xl">
-        <p style="color:#fbbf24;font-size:11px;">⚠️ Sinyal ini adalah <strong>analisa teknikal</strong>, bukan jaminan profit. Gunakan manajemen risiko yang baik.</p>
+        <p style="color:#fbbf24;font-size:11px;">⚠️ Sinyal ini hanya <strong>opini</strong>, kami harap analisa kembali sebelum beraksi.</p>
       </div>
     </div>
   </section>
@@ -966,5 +1012,3 @@ sectionEls.forEach(el => navObserver.observe(el));
 </script>
 </body>
 </html>
-
-

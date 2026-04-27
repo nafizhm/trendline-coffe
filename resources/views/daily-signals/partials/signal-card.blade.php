@@ -1,6 +1,7 @@
 <div data-signal-card class="rounded-[24px] border border-slate-200 bg-slate-50 p-5">
     @php
         $fieldPrefix = "signals[{$type}-{$index}]";
+        $makassarNow = now('Asia/Makassar');
     @endphp
 
     <input type="hidden" data-field="type" name="{{ $fieldPrefix }}[type]" value="{{ $type }}">
@@ -12,6 +13,14 @@
     </div>
 
     <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <div>
+            <label class="mb-2 block text-sm font-semibold text-slate-700">Tanggal</label>
+            <input data-field="signal_date" name="{{ $fieldPrefix }}[signal_date]" type="date" value="{{ $signal['signal_date'] ?? $makassarNow->format('Y-m-d') }}" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-900 focus:border-amber-400 focus:outline-none">
+        </div>
+        <div>
+            <label class="mb-2 block text-sm font-semibold text-slate-700">Jam</label>
+            <input data-field="signal_time" name="{{ $fieldPrefix }}[signal_time]" type="time" value="{{ $signal['signal_time'] ?? $makassarNow->format('H:i') }}" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-900 focus:border-amber-400 focus:outline-none">
+        </div>
         <div>
             <label class="mb-2 block text-sm font-semibold text-slate-700">Symbol</label>
             <input data-field="symbol" name="{{ $fieldPrefix }}[symbol]" type="text" value="{{ $signal['symbol'] ?? '' }}" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-900 focus:border-amber-400 focus:outline-none">
