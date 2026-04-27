@@ -10,7 +10,34 @@
   $waLink = $waNumber ? 'https://wa.me/' . $waNumber . '?text=' . rawurlencode('Halo admin, saya tertarik belajar trading di ' . $appName) : '#';
   $logoUrl = $appSetting?->logo_path ? route('public.settings.files.show', 'logo') : null;
   $ownerPhotoUrl = $appSetting?->owner_photo_path ? route('public.settings.files.show', 'owner-photo') : null;
-  $primaryBrokerLink = $appSetting?->forex_referral_link ?: ($appSetting?->ihsg_stock_referral_link ?: '#');
+  $primaryBrokerLink = route('public.referral-links.index', ['type' => 'forex']);
+  $contentByType = \App\Models\Content::query()
+    ->get()
+    ->mapWithKeys(fn ($item) => [strtolower(trim($item->type)) => $item->content]);
+  $homeIntroContent = $contentByType->get('beranda');
+  $coffeeCommunityContent = $contentByType->get('coffee & community');
+  $smartTradingContent = $contentByType->get('trading cerdas');
+  $officeAddress = $appSetting?->address ?: 'Trendline Coffee, Jl. Contoh Alamat Lengkap No. 123, Jakarta Selatan, DKI Jakarta 12345';
+  $operationalHours = $appSetting?->operational_hours ?: 'Senin - Sabtu, 09.00 - 21.00 WIB';
+  $reservationInfo = $appSetting?->reservation_info ?: 'Hubungi admin WhatsApp untuk konfirmasi kunjungan atau jadwal kelas offline.';
+  preg_match('/src=\"([^\"]+)\"/', $appSetting?->google_maps_embed ?? '', $googleMapsMatches);
+  $googleMapsEmbedUrl = $googleMapsMatches[1] ?? ('https://www.google.com/maps?q=' . rawurlencode($officeAddress) . '&output=embed');
+  $latestSchedules = \App\Models\LatestSchedule::query()
+    ->where('status', 'aktif')
+    ->orderBy('event_date')
+    ->orderBy('event_time')
+    ->take(3)
+    ->get();
+  $forexSignals = \App\Models\DailySignal::query()
+    ->where('type', 'forex')
+    ->orderBy('sort_order')
+    ->orderBy('id')
+    ->get();
+  $stockSignals = \App\Models\DailySignal::query()
+    ->where('type', 'saham')
+    ->orderBy('sort_order')
+    ->orderBy('id')
+    ->get();
   $categoryCollection = \App\Models\Category::query()->orderBy('name')->get();
   $categoryLookup = $categoryCollection->mapWithKeys(fn ($category) => [strtolower($category->name) => $category]);
   $educationTabs = collect([
@@ -209,13 +236,60 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: 100%;
   }
   .owner-img-wrap img {
-    width: 200px;
-    height: 240px;
+    width: min(100%, 300px);
+    height: 340px;
     object-fit: contain;
     object-position: top;
     filter: drop-shadow(0 0 24px rgba(201,168,76,0.35));
+    position: relative;
+    z-index: 1;
+  }
+  .owner-photo-stage {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    padding-top: 8px;
+    padding-bottom: 34px;
+  }
+  .owner-photo-glow {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 260px;
+    height: 260px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(201,168,76,0.18) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .owner-badge {
+    position: absolute;
+    left: 50%;
+    bottom: 18px;
+    transform: translateX(-50%);
+    z-index: 3;
+    min-width: 185px;
+    padding: 12px 26px 10px;
+    border-radius: 999px;
+    text-align: center;
+    box-shadow: 0 18px 30px rgba(0, 0, 0, 0.25);
+  }
+  .owner-badge-name {
+    font-weight: 900;
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    line-height: 1;
+  }
+  .owner-badge-role {
+    margin-top: 6px;
+    font-size: 10px;
+    opacity: 0.88;
+    line-height: 1.35;
   }
 
   /* HERO on mobile: stack vertical, text first */
@@ -225,7 +299,17 @@
     .hero-photo { order: 1; }
     .hero-cta { justify-content: center; }
     .hero-stats { justify-content: center; }
-    .owner-img-wrap img { width: 180px; height: 210px; }
+    .owner-img-wrap img { width: min(100%, 290px); height: 360px; }
+    .owner-photo-stage { margin-bottom: 8px; padding-bottom: 38px; }
+    .owner-photo-glow { width: 280px; height: 280px; top: 38%; }
+    .owner-badge {
+      width: min(100%, 240px);
+      bottom: 14px;
+      padding: 12px 18px 10px;
+      border-radius: 999px;
+    }
+    .owner-badge-name { font-size: 13px; }
+    .owner-badge-role { font-size: 10px; }
   }
 
   /* Section divider */
@@ -294,6 +378,8 @@
       <a href="#home" class="hover:text-[#c9a84c] transition-colors">Beranda</a>
       <a href="#edukasi" class="hover:text-[#c9a84c] transition-colors">Edukasi</a>
       <a href="#sinyal" class="hover:text-[#c9a84c] transition-colors">Sinyal Harian</a>
+      <a href="#jadwal-terbaru" class="hover:text-[#c9a84c] transition-colors">Jadwal Terbaru</a>
+      <a href="#lokasi" class="hover:text-[#c9a84c] transition-colors">Lokasi</a>
       <a href="#sosmed" class="hover:text-[#c9a84c] transition-colors">Sosial Media</a>
     </div>
     <a href="#broker" class="btn-gold px-4 py-2 rounded-full text-xs md:text-sm font-bold whitespace-nowrap">Buka Akun Trading</a>
@@ -302,6 +388,8 @@
   <!-- MOBILE TOP TABS -->
   <div class="md:hidden top-tabs">
     <a href="#home" class="top-tab active">Beranda</a>
+    <a href="#lokasi" class="top-tab">Lokasi</a>
+    <a href="#jadwal-terbaru" class="top-tab">Jadwal</a>
     <a href="#edukasi" class="top-tab">Edukasi</a>
     <a href="#sinyal" class="top-tab">Sinyal Harian</a>
     <a href="#komunitas" class="top-tab">Komunitas</a>
@@ -315,14 +403,12 @@
 
         <!-- PHOTO (top on mobile) -->
         <div class="hero-photo owner-img-wrap md:order-2 md:flex-1">
-          <!-- Gold glow circle behind photo -->
-          <div style="position:relative; display:flex; flex-direction:column; align-items:center;">
-            <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:220px; height:220px; border-radius:50%; background:radial-gradient(circle, rgba(201,168,76,0.18) 0%, transparent 70%); pointer-events:none;"></div>
-            <img src="{{ $ownerPhotoUrl ?: 'https://placehold.co/420x520/0d1f3c/c9a84c?text=Owner+Photo' }}" alt="{{ $appName }} owner" class="w-64 md:w-80 mx-auto" style="max-height: 380px; object-fit: contain;">
-            <!-- Name badge -->
-            <div class="btn-gold px-5 py-2 rounded-full text-center shadow-xl mt-2" style="position:relative; z-index:2;">
-              <div style="font-weight:900; font-size:13px; letter-spacing:1px;">{{ strtoupper($appName) }}</div>
-              <div style="font-size:10px; opacity:0.8;">Chief Executive Officer (CEO)</div>
+          <div class="owner-photo-stage">
+            <div class="owner-photo-glow"></div>
+            <img src="{{ $ownerPhotoUrl ?: 'https://placehold.co/420x520/0d1f3c/c9a84c?text=Owner+Photo' }}" alt="{{ $appName }} owner">
+            <div class="owner-badge btn-gold">
+              <div class="owner-badge-name">SAHIR</div>
+              <div class="owner-badge-role">Chief Executive Officer (CEO)</div>
             </div>
           </div>
         </div>
@@ -336,11 +422,11 @@
           </div>
           <h1 class="font-display font-black leading-tight mb-3" style="font-size: clamp(28px, 8vw, 52px);">
             <span class="gold-shine">Belajar Trading</span><br>
-            <span>Bersama {{ $appName }}</span>
+            <span>Bersama Trendline</span>
           </h1>
-          <p style="color:rgba(255,255,255,0.7); font-size:14px; line-height:1.7; margin-bottom:24px; max-width:420px;">
-            Ngopi santai Bro sambil belajar saham, forex, dan emas bersama komunitas trader. Dipandu langsung oleh mentor berpengalaman.
-          </p>
+          <div style="color:rgba(255,255,255,0.7); font-size:14px; line-height:1.7; margin-bottom:24px; max-width:420px;">
+            {!! $homeIntroContent ?: 'Ngopi santai sambil belajar saham, forex, dan emas bersama komunitas trader. Dipandu langsung oleh mentor berpengalaman.' !!}
+          </div>
           <div class="hero-cta flex flex-wrap gap-3 mb-6">
             <a href="#edukasi" class="btn-gold px-5 py-2.5 rounded-full font-bold text-sm shadow-lg">📚 Mulai Belajar</a>
             <a href="{{ $primaryBrokerLink }}" target="_blank" rel="noreferrer" style="border:1px solid rgba(201,168,76,0.6); color:#c9a84c; padding:10px 20px; border-radius:99px; font-weight:700; font-size:14px; transition:background 0.2s;">💼 Daftar Broker</a>
@@ -375,50 +461,18 @@
         <div class="card-glass p-5 rounded-2xl">
           <div class="text-3xl mb-2">☕</div>
           <h3 class="font-bold text-[#c9a84c] mb-1 text-sm md:text-base">Coffee & Community</h3>
-          <p style="color:rgba(255,255,255,0.65); font-size:13px; line-height:1.65;">{{ $appName }} adalah <strong class="text-white">hub komunitas trader</strong> — tempat ngopi santai, diskusi analisa pasar, dan belajar trading bersama.</p>
+          <div style="color:rgba(255,255,255,0.65); font-size:13px; line-height:1.65;">{!! $coffeeCommunityContent ?: ($appName . ' adalah tempat ngopi santai, diskusi analisa pasar, dan belajar trading bersama.') !!}</div>
         </div>
         <div class="card-glass p-5 rounded-2xl">
           <div class="text-3xl mb-2">📈</div>
           <h3 class="font-bold text-[#c9a84c] mb-1 text-sm md:text-base">Trading Cerdas</h3>
-          <p style="color:rgba(255,255,255,0.65); font-size:13px; line-height:1.65;">Dipandu CEO Sahirudin, kami menyediakan <strong class="text-white">edukasi Forex, Saham & Emas</strong> dari pemula hingga mahir.</p>
+          <div style="color:rgba(255,255,255,0.65); font-size:13px; line-height:1.65;">{!! $smartTradingContent ?: 'Dipandu CEO Sahirudin, kami menyediakan <strong class="text-white">edukasi Forex, Saham & Emas</strong> dari pemula hingga mahir.' !!}</div>
         </div>
       </div>
-      <div class="disclaimer reveal mt-5 p-4 rounded-xl">
-        <p style="color:#fbbf24; font-size:12px;">⚠️ <strong>Disclaimer:</strong> Trading mengandung risiko tinggi. Pastikan memahami risiko sebelum berpartisipasi. Semua konten bersifat edukatif, bukan saran investasi.</p>
+      <div class="disclaimer reveal mt-6 rounded-2xl px-5 py-5 md:px-6 md:py-6">
+        <p style="color:#fbbf24; font-size:14px; line-height:1.85;">⚠️ <strong style="font-size:15px;">Disclaimer:</strong> Trading mengandung risiko tinggi. Pastikan memahami risiko sebelum berpartisipasi. Semua konten bersifat edukatif, bukan saran investasi.</p>
       </div>
 
-      <!-- Education preview cards like reference -->
-      <div class="reveal mt-6 grid grid-cols-2 gap-3">
-        <a href="#edukasi" class="card-glass p-4 rounded-2xl flex items-center gap-3 hover:border-[#c9a84c]/60 transition-all">
-          <div class="text-2xl">🎓</div>
-          <div><div class="font-bold text-sm">Edukasi Forex</div><div style="font-size:11px; color:rgba(255,255,255,0.5);">Teknikal & Fundamental</div></div>
-        </a>
-        <a href="#sinyal" class="card-glass p-4 rounded-2xl flex items-center gap-3 hover:border-[#c9a84c]/60 transition-all">
-          <div class="text-2xl">📊</div>
-          <div><div class="font-bold text-sm">Daily Signal</div><div style="font-size:11px; color:rgba(255,255,255,0.5);">Forex & Saham</div></div>
-        </a>
-      </div>
-
-      <!-- Mini signal table like reference -->
-      <div class="reveal mt-4 card-glass rounded-2xl overflow-hidden">
-        <div class="grid grid-cols-3 text-center py-2 border-b border-[rgba(201,168,76,0.15)]" style="font-size:12px; color:rgba(255,255,255,0.5);">
-          <div>Daily</div><div>Signal</div><div>Socials</div>
-        </div>
-        <div class="divide-y divide-[rgba(201,168,76,0.1)]">
-          <div class="grid grid-cols-3 text-center py-2.5 text-xs">
-            <div class="flex items-center justify-center gap-1.5"><span class="w-4 h-0.5 bg-[#c9a84c] inline-block"></span></div>
-            <div class="font-semibold">1 30</div><div class="text-[#c9a84c]">344.55</div>
-          </div>
-          <div class="grid grid-cols-3 text-center py-2.5 text-xs">
-            <div class="flex items-center justify-center gap-1.5"><span class="w-4 h-0.5 bg-[#c9a84c] inline-block"></span></div>
-            <div class="font-semibold">1 30</div><div class="text-[#c9a84c]">242.55</div>
-          </div>
-          <div class="grid grid-cols-3 text-center py-2.5 text-xs">
-            <div class="flex items-center justify-center gap-1.5"><span class="w-4 h-0.5 bg-[#c9a84c] inline-block"></span></div>
-            <div class="font-semibold">1.50</div><div class="text-[#c9a84c]">242.58</div>
-          </div>
-        </div>
-      </div>
     </div>
   </section>
 
@@ -594,71 +648,44 @@
         </div>
       </div>
       <div id="signal-forex" class="reveal space-y-3">
-        <div class="signal-card p-4 rounded-xl">
-          <div class="flex items-center justify-between mb-2 flex-wrap gap-2">
-            <div class="flex items-center gap-2">
-              <span style="background:rgba(201,168,76,0.15);color:#c9a84c;font-weight:900;font-size:12px;padding:3px 10px;border-radius:8px;">XAU/USD</span>
-              <span style="color:rgba(255,255,255,0.45);font-size:11px;">Emas / USD</span>
+        @forelse ($forexSignals as $signal)
+          <div class="signal-card p-4 rounded-xl">
+            <div class="flex items-center justify-between mb-2 flex-wrap gap-2">
+              <div class="flex items-center gap-2">
+                <span style="background:rgba(201,168,76,0.15);color:#c9a84c;font-weight:900;font-size:12px;padding:3px 10px;border-radius:8px;">{{ $signal->symbol }}</span>
+                <span style="color:rgba(255,255,255,0.45);font-size:11px;">{{ $signal->pair_name }}</span>
+              </div>
+              <span style="display:flex;align-items:center;gap:4px;font-size:11px;font-weight:700;color:{{ $signal->position === 'buy' ? '#4ade80' : '#f87171' }};"><span style="width:7px;height:7px;border-radius:50%;background:{{ $signal->position === 'buy' ? '#4ade80' : '#f87171' }};display:inline-block;"></span>{{ strtoupper($signal->position) }}</span>
             </div>
-            <span style="display:flex;align-items:center;gap:4px;font-size:11px;font-weight:700;color:#4ade80;"><span style="width:7px;height:7px;border-radius:50%;background:#4ade80;display:inline-block;"></span>BUY</span>
-          </div>
-          <div class="grid grid-cols-3 gap-2 text-center mb-2">
-            <div style="background:rgba(255,255,255,0.05);border-radius:8px;padding:6px;"><div style="font-size:10px;color:rgba(255,255,255,0.45);">Entry</div><div style="font-size:13px;font-weight:700;">3.318</div></div>
-            <div style="background:rgba(74,222,128,0.1);border-radius:8px;padding:6px;"><div style="font-size:10px;color:rgba(255,255,255,0.45);">TP</div><div style="font-size:13px;font-weight:700;color:#4ade80;">3.340</div></div>
-            <div style="background:rgba(248,113,113,0.1);border-radius:8px;padding:6px;"><div style="font-size:10px;color:rgba(255,255,255,0.45);">SL</div><div style="font-size:13px;font-weight:700;color:#f87171;">3.305</div></div>
-          </div>
-          <p style="font-size:11px;color:rgba(255,255,255,0.5);line-height:1.5;">Harga emas di area support kuat. Momentum bullish terlihat dari pola daily chart.</p>
-        </div>
-        <div class="signal-card p-4 rounded-xl">
-          <div class="flex items-center justify-between mb-2 flex-wrap gap-2">
-            <div class="flex items-center gap-2">
-              <span style="background:rgba(201,168,76,0.15);color:#c9a84c;font-weight:900;font-size:12px;padding:3px 10px;border-radius:8px;">EUR/USD</span>
-              <span style="color:rgba(255,255,255,0.45);font-size:11px;">Euro / USD</span>
+            <div class="grid grid-cols-3 gap-2 text-center mb-2">
+              <div style="background:rgba(255,255,255,0.05);border-radius:8px;padding:6px;"><div style="font-size:10px;color:rgba(255,255,255,0.45);">Entry</div><div style="font-size:13px;font-weight:700;">{{ $signal->entry_value }}</div></div>
+              <div style="background:rgba(74,222,128,0.1);border-radius:8px;padding:6px;"><div style="font-size:10px;color:rgba(255,255,255,0.45);">TP</div><div style="font-size:13px;font-weight:700;color:#4ade80;">{{ $signal->target_value }}</div></div>
+              <div style="background:rgba(248,113,113,0.1);border-radius:8px;padding:6px;"><div style="font-size:10px;color:rgba(255,255,255,0.45);">SL</div><div style="font-size:13px;font-weight:700;color:#f87171;">{{ $signal->stop_value }}</div></div>
             </div>
-            <span style="display:flex;align-items:center;gap:4px;font-size:11px;font-weight:700;color:#f87171;"><span style="width:7px;height:7px;border-radius:50%;background:#f87171;display:inline-block;"></span>SELL</span>
+            <p style="font-size:11px;color:rgba(255,255,255,0.5);line-height:1.5;">{{ $signal->description }}</p>
           </div>
-          <div class="grid grid-cols-3 gap-2 text-center mb-2">
-            <div style="background:rgba(255,255,255,0.05);border-radius:8px;padding:6px;"><div style="font-size:10px;color:rgba(255,255,255,0.45);">Entry</div><div style="font-size:13px;font-weight:700;">1.0860</div></div>
-            <div style="background:rgba(74,222,128,0.1);border-radius:8px;padding:6px;"><div style="font-size:10px;color:rgba(255,255,255,0.45);">TP</div><div style="font-size:13px;font-weight:700;color:#4ade80;">1.0820</div></div>
-            <div style="background:rgba(248,113,113,0.1);border-radius:8px;padding:6px;"><div style="font-size:10px;color:rgba(255,255,255,0.45);">SL</div><div style="font-size:13px;font-weight:700;color:#f87171;">1.0890</div></div>
+        @empty
+          <div class="rounded-2xl border border-dashed border-[rgba(201,168,76,0.2)] px-4 py-8 text-center text-sm" style="color:rgba(255,255,255,0.55);">
+            Belum ada sinyal forex.
           </div>
-          <p style="font-size:11px;color:rgba(255,255,255,0.5);line-height:1.5;">Resistance kuat di 1.0860. Divergensi RSI mengindikasikan potensi koreksi jangka pendek.</p>
-        </div>
-        <div class="signal-card p-4 rounded-xl">
-          <div class="flex items-center justify-between mb-2 flex-wrap gap-2">
-            <div class="flex items-center gap-2">
-              <span style="background:rgba(201,168,76,0.15);color:#c9a84c;font-weight:900;font-size:12px;padding:3px 10px;border-radius:8px;">GBP/USD</span>
-              <span style="color:rgba(255,255,255,0.45);font-size:11px;">Pound / USD</span>
-            </div>
-            <span style="display:flex;align-items:center;gap:4px;font-size:11px;font-weight:700;color:#4ade80;"><span style="width:7px;height:7px;border-radius:50%;background:#4ade80;display:inline-block;"></span>BUY</span>
-          </div>
-          <div class="grid grid-cols-3 gap-2 text-center mb-2">
-            <div style="background:rgba(255,255,255,0.05);border-radius:8px;padding:6px;"><div style="font-size:10px;color:rgba(255,255,255,0.45);">Entry</div><div style="font-size:13px;font-weight:700;">1.2730</div></div>
-            <div style="background:rgba(74,222,128,0.1);border-radius:8px;padding:6px;"><div style="font-size:10px;color:rgba(255,255,255,0.45);">TP</div><div style="font-size:13px;font-weight:700;color:#4ade80;">1.2800</div></div>
-            <div style="background:rgba(248,113,113,0.1);border-radius:8px;padding:6px;"><div style="font-size:10px;color:rgba(255,255,255,0.45);">SL</div><div style="font-size:13px;font-weight:700;color:#f87171;">1.2690</div></div>
-          </div>
-          <p style="font-size:11px;color:rgba(255,255,255,0.5);line-height:1.5;">Breakout dari pola konsolidasi. Candle bullish engulfing terkonfirmasi di H4.</p>
-        </div>
+        @endforelse
       </div>
       <div id="signal-saham" class="hidden reveal space-y-3">
-        <div class="signal-card p-4 rounded-xl">
-          <div class="flex items-center justify-between mb-2"><div class="flex items-center gap-2"><span style="background:rgba(201,168,76,0.15);color:#c9a84c;font-weight:900;font-size:12px;padding:3px 10px;border-radius:8px;">BBRI</span><span style="color:rgba(255,255,255,0.45);font-size:11px;">Bank Rakyat Indonesia</span></div><span style="color:#4ade80;font-size:11px;font-weight:700;">● BUY</span></div>
-          <div class="grid grid-cols-3 gap-2 text-center mb-2">
-            <div style="background:rgba(255,255,255,0.05);border-radius:8px;padding:6px;"><div style="font-size:10px;color:rgba(255,255,255,0.45);">Entry</div><div style="font-size:13px;font-weight:700;">4.800</div></div>
-            <div style="background:rgba(74,222,128,0.1);border-radius:8px;padding:6px;"><div style="font-size:10px;color:rgba(255,255,255,0.45);">Target</div><div style="font-size:13px;font-weight:700;color:#4ade80;">5.100</div></div>
-            <div style="background:rgba(248,113,113,0.1);border-radius:8px;padding:6px;"><div style="font-size:10px;color:rgba(255,255,255,0.45);">Support</div><div style="font-size:13px;font-weight:700;color:#f87171;">4.600</div></div>
+        @forelse ($stockSignals as $signal)
+          <div class="signal-card p-4 rounded-xl">
+            <div class="flex items-center justify-between mb-2 flex-wrap gap-2"><div class="flex items-center gap-2"><span style="background:rgba(201,168,76,0.15);color:#c9a84c;font-weight:900;font-size:12px;padding:3px 10px;border-radius:8px;">{{ $signal->symbol }}</span><span style="color:rgba(255,255,255,0.45);font-size:11px;">{{ $signal->pair_name }}</span></div><span style="color:{{ $signal->position === 'buy' ? '#4ade80' : '#f87171' }};font-size:11px;font-weight:700;">● {{ strtoupper($signal->position) }}</span></div>
+            <div class="grid grid-cols-3 gap-2 text-center mb-2">
+              <div style="background:rgba(255,255,255,0.05);border-radius:8px;padding:6px;"><div style="font-size:10px;color:rgba(255,255,255,0.45);">Entry</div><div style="font-size:13px;font-weight:700;">{{ $signal->entry_value }}</div></div>
+              <div style="background:rgba(74,222,128,0.1);border-radius:8px;padding:6px;"><div style="font-size:10px;color:rgba(255,255,255,0.45);">Target</div><div style="font-size:13px;font-weight:700;color:#4ade80;">{{ $signal->target_value }}</div></div>
+              <div style="background:rgba(248,113,113,0.1);border-radius:8px;padding:6px;"><div style="font-size:10px;color:rgba(255,255,255,0.45);">Support</div><div style="font-size:13px;font-weight:700;color:#f87171;">{{ $signal->stop_value }}</div></div>
+            </div>
+            <p style="font-size:11px;color:rgba(255,255,255,0.5);">{{ $signal->description }}</p>
           </div>
-          <p style="font-size:11px;color:rgba(255,255,255,0.5);">Valuasi menarik, ROE tinggi. Momentum teknikal mendukung akumulasi.</p>
-        </div>
-        <div class="signal-card p-4 rounded-xl">
-          <div class="flex items-center justify-between mb-2"><div class="flex items-center gap-2"><span style="background:rgba(201,168,76,0.15);color:#c9a84c;font-weight:900;font-size:12px;padding:3px 10px;border-radius:8px;">TLKM</span><span style="color:rgba(255,255,255,0.45);font-size:11px;">Telkom Indonesia</span></div><span style="color:#4ade80;font-size:11px;font-weight:700;">● BUY</span></div>
-          <div class="grid grid-cols-3 gap-2 text-center mb-2">
-            <div style="background:rgba(255,255,255,0.05);border-radius:8px;padding:6px;"><div style="font-size:10px;color:rgba(255,255,255,0.45);">Entry</div><div style="font-size:13px;font-weight:700;">3.200</div></div>
-            <div style="background:rgba(74,222,128,0.1);border-radius:8px;padding:6px;"><div style="font-size:10px;color:rgba(255,255,255,0.45);">Target</div><div style="font-size:13px;font-weight:700;color:#4ade80;">3.500</div></div>
-            <div style="background:rgba(248,113,113,0.1);border-radius:8px;padding:6px;"><div style="font-size:10px;color:rgba(255,255,255,0.45);">Support</div><div style="font-size:13px;font-weight:700;color:#f87171;">3.050</div></div>
+        @empty
+          <div class="rounded-2xl border border-dashed border-[rgba(201,168,76,0.2)] px-4 py-8 text-center text-sm" style="color:rgba(255,255,255,0.55);">
+            Belum ada sinyal saham.
           </div>
-          <p style="font-size:11px;color:rgba(255,255,255,0.5);">Dividend yield menarik. Pola accumulation terlihat di chart mingguan.</p>
-        </div>
+        @endforelse
       </div>
       <div class="disclaimer reveal mt-5 p-3 rounded-xl">
         <p style="color:#fbbf24;font-size:11px;">⚠️ Sinyal ini adalah <strong>analisa teknikal</strong>, bukan jaminan profit. Gunakan manajemen risiko yang baik.</p>
@@ -683,10 +710,10 @@
             </p>
           </div>
           <div class="mt-8 md:mt-10 flex flex-col gap-4">
-            <a href="{{ $appSetting?->forex_referral_link ?: '#' }}" target="_blank" rel="noreferrer" class="block w-full rounded-full px-6 py-4 text-center text-base font-bold transition hover:-translate-y-0.5 md:text-2xl" style="background:linear-gradient(135deg, #c9a84c 0%, #f0c060 52%, #d8b25b 100%);color:#0a1628;box-shadow:0 14px 30px rgba(201,168,76,0.28);">
+            <a href="{{ route('public.referral-links.index', ['type' => 'forex']) }}" class="block w-full rounded-full px-6 py-4 text-center text-base font-bold transition hover:-translate-y-0.5 md:text-2xl" style="background:linear-gradient(135deg, #c9a84c 0%, #f0c060 52%, #d8b25b 100%);color:#0a1628;box-shadow:0 14px 30px rgba(201,168,76,0.28);">
               Buka Akun Forex ->
             </a>
-            <a href="{{ $appSetting?->ihsg_stock_referral_link ?: '#' }}" target="_blank" rel="noreferrer" class="block w-full rounded-full px-6 py-4 text-center text-base font-bold text-white transition hover:-translate-y-0.5 md:text-2xl" style="border:1px solid rgba(201,168,76,0.38);background:rgba(255,255,255,0.05);backdrop-filter:blur(10px);box-shadow:inset 0 0 0 1px rgba(255,255,255,0.03);">
+            <a href="{{ route('public.referral-links.index', ['type' => 'saham']) }}" class="block w-full rounded-full px-6 py-4 text-center text-base font-bold text-white transition hover:-translate-y-0.5 md:text-2xl" style="border:1px solid rgba(201,168,76,0.38);background:rgba(255,255,255,0.05);backdrop-filter:blur(10px);box-shadow:inset 0 0 0 1px rgba(255,255,255,0.03);">
               Buka Akun Saham ->
             </a>
           </div>
@@ -729,6 +756,78 @@
     </div>
   </section>
 
+  <!-- ===== JADWAL TERBARU ===== -->
+  <section id="jadwal-terbaru" class="py-12 px-4 sec-div">
+    <div class="max-w-5xl mx-auto">
+      <div class="reveal text-center mb-8">
+        <span class="badge-new mb-3 inline-block">JADWAL</span>
+        <h2 class="font-display font-black text-2xl md:text-3xl">Jadwal Terbaru</h2>
+        <p style="color:rgba(255,255,255,0.58);font-size:13px;margin-top:8px;">Pantau agenda edukasi dan sesi market update terbaru dari tim {{ $appName }}.</p>
+      </div>
+      <div class="grid gap-4 md:grid-cols-3">
+        @forelse ($latestSchedules as $schedule)
+          <div class="reveal rounded-[28px] border border-[rgba(201,168,76,0.18)] bg-white/5 p-5 shadow-lg shadow-black/10 backdrop-blur-sm">
+            <div class="inline-flex rounded-full px-3 py-1 text-[11px] font-extrabold tracking-[0.18em]" style="background:rgba(201,168,76,0.16); color:#f3d27e;">
+              {{ \Illuminate\Support\Str::of($schedule->event_time)->append(' WIB') }}
+            </div>
+            <div class="mt-4 text-sm font-semibold text-[#c9a84c]">
+              {{ $schedule->event_date?->translatedFormat('l, j F Y') }}
+            </div>
+            <h3 class="mt-2 text-lg font-extrabold leading-snug text-white">{{ $schedule->title }}</h3>
+            <div class="mt-3 text-sm leading-7 text-white/68 [&_p]:m-0 [&_ul]:my-0 [&_ol]:my-0 [&_li]:ml-4">
+              {!! $schedule->description !!}
+            </div>
+          </div>
+        @empty
+          <div class="reveal rounded-[28px] border border-[rgba(201,168,76,0.18)] bg-white/5 p-6 text-center text-sm leading-7 text-white/68 shadow-lg shadow-black/10 backdrop-blur-sm md:col-span-3">
+            Jadwal terbaru belum tersedia. Silakan cek lagi sebentar lagi.
+          </div>
+        @endforelse
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== LOKASI ===== -->
+  <section id="lokasi" class="py-12 px-4 sec-div" style="background:#0d1f3c;">
+    <div class="max-w-5xl mx-auto">
+      <div class="reveal text-center mb-8">
+        <span class="badge-new mb-3 inline-block">LOKASI</span>
+        <h2 class="font-display font-black text-2xl md:text-3xl">Lokasi {{ $appName }}</h2>
+        <p style="color:rgba(255,255,255,0.58);font-size:13px;margin-top:8px;">Kunjungi lokasi kami untuk diskusi trading, ngopi santai, dan ikut sesi komunitas secara langsung.</p>
+      </div>
+      <div class="grid gap-5 md:grid-cols-[0.95fr_1.05fr]">
+        <div class="reveal card-glass rounded-[28px] p-6">
+          <div class="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl" style="background:rgba(201,168,76,0.16); color:#c9a84c;">
+            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21s-6-5.686-6-11a6 6 0 1112 0c0 5.314-6 11-6 11z"/><circle cx="12" cy="10" r="2.5"/></svg>
+          </div>
+          <h3 class="text-xl font-extrabold text-white">Alamat Lengkap</h3>
+          <p class="mt-4 text-sm leading-7 text-white/72">
+            {{ $officeAddress }}
+          </p>
+          <div class="mt-6 space-y-3 text-sm text-white/70">
+            <div class="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+              <div class="font-semibold text-[#c9a84c]">Jam Operasional</div>
+              <div class="mt-1">{{ $operationalHours }}</div>
+            </div>
+            <div class="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+              <div class="font-semibold text-[#c9a84c]">Info Reservasi</div>
+              <div class="mt-1">{{ $reservationInfo }}</div>
+            </div>
+          </div>
+        </div>
+        <div class="reveal overflow-hidden rounded-[28px] border border-[rgba(201,168,76,0.22)] bg-[#091426] shadow-2xl">
+          <iframe
+            src="{{ $googleMapsEmbedUrl }}"
+            class="h-[360px] w-full md:h-full"
+            style="border:0;"
+            allowfullscreen=""
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- ===== SOCIAL MEDIA ===== -->
   <section id="sosmed" class="py-12 px-4 sec-div">
     <div class="max-w-4xl mx-auto text-center reveal">
@@ -743,20 +842,22 @@
           <span style="font-size:11px;color:rgba(255,255,255,0.6);">Instagram</span>
         </a>
         <a href="{{ $appSetting?->facebook_link ?: '#' }}" target="_blank" rel="noreferrer" class="flex flex-col items-center gap-2 group">
-          <div class="w-14 h-14 rounded-2xl flex items-center justify-center bg-blue-600 transition-transform group-hover:scale-110">
-            <svg class="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+          <div class="w-14 h-14 rounded-2xl flex items-center justify-center transition-transform group-hover:scale-110" style="background:#1877F2;">
+            <svg class="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M13.5 22v-8h2.7l.4-3.2h-3.1V8.8c0-.9.2-1.6 1.5-1.6h1.7V4.3c-.3 0-1.3-.1-2.5-.1-2.5 0-4.2 1.5-4.2 4.4v2.2H7.5V14h2.5v8h3.5z"/></svg>
           </div>
           <span style="font-size:11px;color:rgba(255,255,255,0.6);">Facebook</span>
         </a>
         <a href="{{ $appSetting?->tiktok_link ?: '#' }}" target="_blank" rel="noreferrer" class="flex flex-col items-center gap-2 group">
-          <div class="w-14 h-14 rounded-2xl flex items-center justify-center bg-sky-500 transition-transform group-hover:scale-110">
-            <svg class="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/></svg>
+          <div class="relative w-14 h-14 rounded-2xl flex items-center justify-center transition-transform group-hover:scale-110" style="background:#0f0f10; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06);">
+            <span aria-hidden="true" class="absolute text-[30px] font-black leading-none" style="color:#25F4EE; transform:translate(2px,1px);">♪</span>
+            <span aria-hidden="true" class="absolute text-[30px] font-black leading-none" style="color:#FE2C55; transform:translate(-2px,-1px);">♪</span>
+            <span aria-hidden="true" class="relative text-[30px] font-black leading-none text-white">♪</span>
           </div>
           <span style="font-size:11px;color:rgba(255,255,255,0.6);">TikTok</span>
         </a>
         <a href="{{ $appSetting?->youtube_link ?: '#' }}" target="_blank" rel="noreferrer" class="flex flex-col items-center gap-2 group">
-          <div class="w-14 h-14 rounded-2xl flex items-center justify-center bg-red-600 transition-transform group-hover:scale-110">
-            <svg class="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M23.495 6.205a3.007 3.007 0 00-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 00.527 6.205a31.247 31.247 0 00-.522 5.805 31.247 31.247 0 00.522 5.783 3.007 3.007 0 002.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 002.088-2.088 31.247 31.247 0 00.5-5.783 31.247 31.247 0 00-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg>
+          <div class="w-14 h-14 rounded-2xl flex items-center justify-center transition-transform group-hover:scale-110" style="background:#FF0000;">
+            <svg class="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8ZM9.6 15.6V8.4l6.3 3.6-6.3 3.6Z"/></svg>
           </div>
           <span style="font-size:11px;color:rgba(255,255,255,0.6);">YouTube</span>
         </a>
@@ -853,8 +954,8 @@ function showSignal(type) {
 }
 
 // Active bottom nav on scroll
-const sections = ['home','edukasi','sinyal','komunitas','sosmed'];
-const navIds   = ['home','edukasi','sinyal','komunitas','sosmed'];
+const sections = ['home','lokasi','jadwal-terbaru','edukasi','sinyal','komunitas','sosmed'];
+const navIds   = ['home','lokasi','jadwal-terbaru','edukasi','sinyal','komunitas','sosmed'];
 const sectionEls = sections.map(id => document.getElementById(id)).filter(Boolean);
 
 const navObserver = new IntersectionObserver((entries) => {
@@ -873,5 +974,6 @@ sectionEls.forEach(el => navObserver.observe(el));
 </script>
 </body>
 </html>
+
 
 

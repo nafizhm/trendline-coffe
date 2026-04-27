@@ -26,19 +26,22 @@ class SettingController extends Controller
         $data = $request->validate([
             'app_name' => ['required', 'string', 'max:255'],
             'direct_wa_number' => ['required', 'string', 'max:30'],
+            'address' => ['nullable', 'string'],
+            'operational_hours' => ['nullable', 'string', 'max:255'],
+            'reservation_info' => ['nullable', 'string'],
+            'google_maps_embed' => ['nullable', 'string'],
             'owner_photo' => ['nullable', 'image', 'max:4096'],
             'logo' => ['nullable', 'image', 'max:4096'],
             'forex_referral_link' => ['nullable', 'url', 'max:255'],
             'ihsg_stock_referral_link' => ['nullable', 'url', 'max:255'],
             'wa_group_link' => ['nullable', 'url', 'max:255'],
             'telegram_group_link' => ['nullable', 'url', 'max:255'],
-            'facebook_link' => ['nullable', 'url', 'max:255'],
             'instagram_link' => ['nullable', 'url', 'max:255'],
             'tiktok_link' => ['nullable', 'url', 'max:255'],
-            'youtube_link' => ['nullable', 'url', 'max:255'],
         ], [
             'app_name.required' => 'Nama aplikasi wajib diisi.',
             'direct_wa_number.required' => 'No Direct WA wajib diisi.',
+            'operational_hours.max' => 'Jam operasional maksimal 255 karakter.',
             'owner_photo.image' => 'Foto owner harus berupa gambar.',
             'owner_photo.max' => 'Foto owner maksimal 4 MB.',
             'logo.image' => 'Logo harus berupa gambar.',
@@ -47,10 +50,8 @@ class SettingController extends Controller
             'ihsg_stock_referral_link.url' => 'Link referal Saham IHSG harus berupa URL yang valid.',
             'wa_group_link.url' => 'Link Group WA harus berupa URL yang valid.',
             'telegram_group_link.url' => 'Link Group Telegram harus berupa URL yang valid.',
-            'facebook_link.url' => 'Link akun FB harus berupa URL yang valid.',
             'instagram_link.url' => 'Link akun IG harus berupa URL yang valid.',
             'tiktok_link.url' => 'Link akun Tiktok harus berupa URL yang valid.',
-            'youtube_link.url' => 'Link akun Youtube harus berupa URL yang valid.',
         ]);
 
         if ($request->hasFile('owner_photo')) {

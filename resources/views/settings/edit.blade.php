@@ -5,6 +5,7 @@
         [
             'label' => 'Upload Foto Owner',
             'name' => 'owner_photo',
+            'deleteFormId' => 'delete-owner-photo-form',
             'path' => $setting->owner_photo_path,
             'viewRoute' => route('settings.files.show', 'owner-photo'),
             'deleteRoute' => route('settings.files.destroy', 'owner-photo'),
@@ -13,6 +14,7 @@
         [
             'label' => 'Upload Logo',
             'name' => 'logo',
+            'deleteFormId' => 'delete-logo-form',
             'path' => $setting->logo_path,
             'viewRoute' => route('settings.files.show', 'logo'),
             'deleteRoute' => route('settings.files.destroy', 'logo'),
@@ -57,6 +59,48 @@
                 </div>
             </section>
 
+            <section class="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm">
+                <div class="mb-5">
+                    <h3 class="text-lg font-black text-slate-900">Lokasi Trendline</h3>
+                    <p class="mt-1 text-sm text-slate-600">Data di bawah ini akan langsung tampil pada section lokasi di halaman depan.</p>
+                </div>
+
+                <div class="grid gap-5 md:grid-cols-2">
+                    <div class="md:col-span-2">
+                        <label for="address" class="mb-2 block text-sm font-semibold text-slate-700">Alamat</label>
+                        <textarea id="address" name="address" rows="3" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-amber-400 focus:outline-none">{{ old('address', $setting->address) }}</textarea>
+                        @error('address')
+                            <p class="mt-2 text-sm text-rose-500">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div>
+                        <label for="operational_hours" class="mb-2 block text-sm font-semibold text-slate-700">Jam Operasional</label>
+                        <input id="operational_hours" name="operational_hours" type="text" value="{{ old('operational_hours', $setting->operational_hours) }}" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-amber-400 focus:outline-none">
+                        @error('operational_hours')
+                            <p class="mt-2 text-sm text-rose-500">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div>
+                        <label for="reservation_info" class="mb-2 block text-sm font-semibold text-slate-700">Info Reservasi</label>
+                        <textarea id="reservation_info" name="reservation_info" rows="3" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-amber-400 focus:outline-none">{{ old('reservation_info', $setting->reservation_info) }}</textarea>
+                        @error('reservation_info')
+                            <p class="mt-2 text-sm text-rose-500">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div class="md:col-span-2">
+                        <label for="google_maps_embed" class="mb-2 block text-sm font-semibold text-slate-700">Embed Lokasi Google Map</label>
+                        <textarea id="google_maps_embed" name="google_maps_embed" rows="6" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 font-mono text-sm text-slate-900 placeholder:text-slate-400 focus:border-amber-400 focus:outline-none">{{ old('google_maps_embed', $setting->google_maps_embed) }}</textarea>
+                        <p class="mt-2 text-xs text-slate-500">Paste kode embed dari Google Maps, misalnya tag iframe lengkap.</p>
+                        @error('google_maps_embed')
+                            <p class="mt-2 text-sm text-rose-500">{{ $message }}</p>
+                        @enderror
+                    </div>
+                </div>
+            </section>
+
             <section class="grid gap-6 xl:grid-cols-2">
                 @foreach ($fileCards as $fileCard)
                     <div class="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm">
@@ -73,13 +117,14 @@
                                     <a href="{{ $fileCard['viewRoute'] }}" target="_blank" class="rounded-xl border border-emerald-300 px-4 py-2 text-sm font-bold text-emerald-700 transition hover:bg-emerald-100">
                                         View
                                     </a>
-                                    <form action="{{ $fileCard['deleteRoute'] }}" method="POST" onsubmit="return confirm('Hapus file ini?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="rounded-xl border border-rose-200 px-4 py-2 text-sm font-bold text-rose-600 transition hover:bg-rose-50">
-                                            Hapus
-                                        </button>
-                                    </form>
+                                    <button
+                                        type="submit"
+                                        form="{{ $fileCard['deleteFormId'] }}"
+                                        onclick="return confirm('Hapus file ini?')"
+                                        class="rounded-xl border border-rose-200 px-4 py-2 text-sm font-bold text-rose-600 transition hover:bg-rose-50"
+                                    >
+                                        Hapus
+                                    </button>
                                 </div>
                             </div>
                         @endif
@@ -101,14 +146,6 @@
                         <label for="ihsg_stock_referral_link" class="mb-2 block text-sm font-semibold text-slate-700">Link Referal Saham IHSG</label>
                         <input id="ihsg_stock_referral_link" name="ihsg_stock_referral_link" type="url" value="{{ old('ihsg_stock_referral_link', $setting->ihsg_stock_referral_link) }}" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-amber-400 focus:outline-none">
                         @error('ihsg_stock_referral_link')
-                            <p class="mt-2 text-sm text-rose-500">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    <div>
-                        <label for="facebook_link" class="mb-2 block text-sm font-semibold text-slate-700">Link Akun FB</label>
-                        <input id="facebook_link" name="facebook_link" type="url" value="{{ old('facebook_link', $setting->facebook_link) }}" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-amber-400 focus:outline-none">
-                        @error('facebook_link')
                             <p class="mt-2 text-sm text-rose-500">{{ $message }}</p>
                         @enderror
                     </div>
@@ -145,13 +182,6 @@
                         @enderror
                     </div>
 
-                    <div>
-                        <label for="youtube_link" class="mb-2 block text-sm font-semibold text-slate-700">Link Akun Youtube</label>
-                        <input id="youtube_link" name="youtube_link" type="url" value="{{ old('youtube_link', $setting->youtube_link) }}" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-amber-400 focus:outline-none">
-                        @error('youtube_link')
-                            <p class="mt-2 text-sm text-rose-500">{{ $message }}</p>
-                        @enderror
-                    </div>
                 </div>
 
                 <div class="mt-6 flex justify-end">
@@ -165,6 +195,15 @@
                 </div>
             </section>
         </form>
+
+        @foreach ($fileCards as $fileCard)
+            @if ($fileCard['path'])
+                <form id="{{ $fileCard['deleteFormId'] }}" action="{{ $fileCard['deleteRoute'] }}" method="POST" class="hidden">
+                    @csrf
+                    @method('DELETE')
+                </form>
+            @endif
+        @endforeach
     </div>
 
     <script>

@@ -106,11 +106,41 @@
                             </span>
                             <span class="sidebar-label">Artikel</span>
                         </a>
+                        <a href="{{ route('contents.index') }}" class="sidebar-link {{ request()->routeIs('contents.*') ? 'active' : '' }} flex items-center gap-2.5 rounded-xl border border-transparent px-3 py-2.5 text-sm font-semibold text-slate-600">
+                            <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-slate-700">
+                                <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 4.5h9A1.5 1.5 0 0118 6v12a1.5 1.5 0 01-1.5 1.5h-9A1.5 1.5 0 016 18V6a1.5 1.5 0 011.5-1.5z"/><path stroke-linecap="round" stroke-linejoin="round" d="M9 8.25h6M9 12h6M9 15.75h3"/></svg>
+                            </span>
+                            <span class="sidebar-label">Konten</span>
+                        </a>
                         <a href="{{ route('videos.index') }}" class="sidebar-link {{ request()->routeIs('videos.*') ? 'active' : '' }} flex items-center gap-2.5 rounded-xl border border-transparent px-3 py-2.5 text-sm font-semibold text-slate-600">
                             <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-slate-700">
                                 <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6.75a2.25 2.25 0 00-2.25-2.25h-6A2.25 2.25 0 005.25 6.75v10.5A2.25 2.25 0 007.5 19.5h6a2.25 2.25 0 002.25-2.25V13.5l3.75 2.25v-7.5l-3.75 2.25z"/></svg>
                             </span>
                             <span class="sidebar-label">Video</span>
+                        </a>
+                        <a href="{{ route('referral-links.index') }}" class="sidebar-link {{ request()->routeIs('referral-links.*') ? 'active' : '' }} flex items-center gap-2.5 rounded-xl border border-transparent px-3 py-2.5 text-sm font-semibold text-slate-600">
+                            <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-slate-700">
+                                <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 10.5V6.75a2.25 2.25 0 00-4.5 0v3.75m-3 0h10.5a1.5 1.5 0 011.5 1.5v5.25a1.5 1.5 0 01-1.5 1.5H6a1.5 1.5 0 01-1.5-1.5V12a1.5 1.5 0 011.5-1.5zm4.5 3.75h.008v.008H10.5v-.008z"/></svg>
+                            </span>
+                            <span class="sidebar-label">Link Referal</span>
+                        </a>
+                        <a href="{{ route('latest-schedules.index') }}" class="sidebar-link {{ request()->routeIs('latest-schedules.*') ? 'active' : '' }} flex items-center gap-2.5 rounded-xl border border-transparent px-3 py-2.5 text-sm font-semibold text-slate-600">
+                            <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-slate-700">
+                                <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 6.75h7.5M8.25 12h7.5M8.25 17.25h4.5M6 3.75h12A2.25 2.25 0 0120.25 6v12A2.25 2.25 0 0118 20.25H6A2.25 2.25 0 013.75 18V6A2.25 2.25 0 016 3.75z"/></svg>
+                            </span>
+                            <span class="sidebar-label">Jadwal Terbaru</span>
+                        </a>
+                        <a href="{{ route('daily-signals.index', ['type' => 'forex']) }}" class="sidebar-link {{ request()->routeIs('daily-signals.*') && request()->route('type') === 'forex' ? 'active' : '' }} flex items-center gap-2.5 rounded-xl border border-transparent px-3 py-2.5 text-sm font-semibold text-slate-600">
+                            <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-slate-700">
+                                <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zm14.71-9.04a1.003 1.003 0 000-1.42l-2.5-2.5a1.003 1.003 0 00-1.42 0l-1.96 1.96 3.75 3.75 2.13-1.79z"/></svg>
+                            </span>
+                            <span class="sidebar-label">Sinyal Harian Forex</span>
+                        </a>
+                        <a href="{{ route('daily-signals.index', ['type' => 'saham']) }}" class="sidebar-link {{ request()->routeIs('daily-signals.*') && request()->route('type') === 'saham' ? 'active' : '' }} flex items-center gap-2.5 rounded-xl border border-transparent px-3 py-2.5 text-sm font-semibold text-slate-600">
+                            <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-slate-700">
+                                <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 19.5h16M6.75 16.5V9.75M12 16.5V6.75M17.25 16.5V12"/></svg>
+                            </span>
+                            <span class="sidebar-label">Sinyal Harian Saham</span>
                         </a>
                         <a href="{{ route('settings.edit') }}" class="sidebar-link {{ request()->routeIs('settings.*') ? 'active' : '' }} flex items-center gap-2.5 rounded-xl border border-transparent px-3 py-2.5 text-sm font-semibold text-slate-600">
                             <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-slate-700">
