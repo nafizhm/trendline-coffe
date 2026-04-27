@@ -15,7 +15,7 @@
             </div>
         </section>
 
-        <form action="{{ route('articles.store') }}" method="POST" class="space-y-6" data-loading-form>
+        <form action="{{ route('articles.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6" data-loading-form>
             @csrf
 
             <section class="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm">

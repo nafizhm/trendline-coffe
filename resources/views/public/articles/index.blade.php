@@ -38,6 +38,9 @@
                     <h2 class="mt-4 text-lg font-black leading-7 text-white">{{ $article->title }}</h2>
                     <p class="mt-3 text-sm leading-7 text-white/65">{{ \Illuminate\Support\Str::limit(strip_tags($article->content), 150) }}</p>
                     <div class="mt-4 text-xs font-semibold uppercase tracking-[0.18em] text-white/35">{{ $article->admin_name }}</div>
+                    <a href="{{ route('public.articles.show', $article) }}" class="mt-5 inline-flex rounded-full border border-[rgba(201,168,76,0.3)] px-4 py-2 text-xs font-bold text-[#c9a84c] transition hover:bg-white/5">
+                        Baca Selengkapnya
+                    </a>
                 </article>
             @empty
                 <div class="col-span-full rounded-[28px] border border-[rgba(201,168,76,0.18)] bg-white/5 p-8 text-center text-white/60">

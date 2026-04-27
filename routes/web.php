@@ -16,6 +16,8 @@ use Illuminate\Support\Facades\Route;
 Route::view('/', 'home')->name('home');
 Route::get('/media/settings/{field}', [SettingController::class, 'showFile'])->name('public.settings.files.show');
 Route::get('/edukasi/artikel', [ArticleController::class, 'publicIndex'])->name('public.articles.index');
+Route::get('/edukasi/artikel/{article}', [ArticleController::class, 'publicShow'])->name('public.articles.show');
+Route::get('/edukasi/artikel/{article}/file', [ArticleController::class, 'showAttachment'])->name('public.articles.files.show');
 Route::get('/edukasi/video', [VideoController::class, 'publicIndex'])->name('public.videos.index');
 Route::get('/buka-akun/{type}', [ReferralLinkController::class, 'publicIndex'])->name('public.referral-links.index');
 

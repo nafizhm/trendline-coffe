@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     'title',
     'category_id',
     'content',
+    'attachment_path',
     'status',
     'admin_name',
 ])]

@@ -427,16 +427,7 @@
           <div style="color:rgba(255,255,255,0.7); font-size:14px; line-height:1.7; margin-bottom:24px; max-width:420px;">
             {!! $homeIntroContent ?: 'Ngopi santai sambil belajar saham, forex, dan emas bersama komunitas trader. Dipandu langsung oleh mentor berpengalaman.' !!}
           </div>
-          <div class="hero-cta flex flex-wrap gap-3 mb-6">
-            <a href="#edukasi" class="btn-gold px-5 py-2.5 rounded-full font-bold text-sm shadow-lg">📚 Mulai Belajar</a>
-            <a href="{{ $primaryBrokerLink }}" target="_blank" rel="noreferrer" style="border:1px solid rgba(201,168,76,0.6); color:#c9a84c; padding:10px 20px; border-radius:99px; font-weight:700; font-size:14px; transition:background 0.2s;">💼 Daftar Broker</a>
-          </div>
-          <!-- Stats -->
-          <div class="hero-stats flex gap-5 text-center">
-            <div><div style="font-size:22px; font-weight:900; color:#c9a84c;">500+</div><div style="font-size:11px; color:rgba(255,255,255,0.5);">Member</div></div>
-            <div style="border-left:1px solid rgba(201,168,76,0.2); padding-left:20px;"><div style="font-size:22px; font-weight:900; color:#c9a84c;">3+</div><div style="font-size:11px; color:rgba(255,255,255,0.5);">Tahun</div></div>
-            <div style="border-left:1px solid rgba(201,168,76,0.2); padding-left:20px;"><div style="font-size:22px; font-weight:900; color:#c9a84c;">100+</div><div style="font-size:11px; color:rgba(255,255,255,0.5);">Materi</div></div>
-          </div>
+
         </div>
 
       </div>
@@ -578,7 +569,7 @@
               </div>
               <div class="space-y-3">
                 @forelse ($tab['articles'] as $article)
-                  <article class="rounded-2xl border border-[rgba(201,168,76,0.14)] bg-[rgba(255,255,255,0.03)] p-4">
+                  <a href="{{ route('public.articles.show', $article) }}" class="block rounded-2xl border border-[rgba(201,168,76,0.14)] bg-[rgba(255,255,255,0.03)] p-4 transition hover:border-[rgba(201,168,76,0.4)] hover:bg-[rgba(255,255,255,0.06)]">
                     <div class="flex items-center justify-between gap-3 text-[11px]" style="color:rgba(255,255,255,0.45);">
                       <span>{{ $article->published_at?->format('d M Y') }}</span>
                       <span>{{ $article->admin_name }}</span>
@@ -587,7 +578,7 @@
                     <p class="mt-2 text-xs leading-6 md:text-sm" style="color:rgba(255,255,255,0.58);">
                       {{ \Illuminate\Support\Str::limit(strip_tags($article->content), 120) }}
                     </p>
-                  </article>
+                  </a>
                 @empty
                   <div class="rounded-2xl border border-dashed border-[rgba(201,168,76,0.2)] px-4 py-8 text-center text-sm" style="color:rgba(255,255,255,0.55);">
                     Belum ada artikel publish untuk kategori {{ $tab['label'] }}.
@@ -974,6 +965,5 @@ sectionEls.forEach(el => navObserver.observe(el));
 </script>
 </body>
 </html>
-
 
 

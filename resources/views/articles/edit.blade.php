@@ -15,7 +15,7 @@
             </div>
         </section>
 
-        <form action="{{ route('articles.update', $article) }}" method="POST" class="space-y-6" data-loading-form>
+        <form action="{{ route('articles.update', $article) }}" method="POST" enctype="multipart/form-data" class="space-y-6" data-loading-form>
             @csrf
             @method('PUT')
 

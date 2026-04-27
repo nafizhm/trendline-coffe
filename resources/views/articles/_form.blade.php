@@ -63,4 +63,20 @@
             <p class="mt-2 text-sm text-rose-500">{{ $message }}</p>
         @enderror
     </div>
+
+    <div class="md:col-span-2">
+        <label for="attachment" class="mb-2 block text-sm font-semibold text-slate-700">Upload File Artikel</label>
+        @if ($articleModel?->attachment_path)
+            <div class="mb-3">
+                <a href="{{ route('public.articles.files.show', $articleModel) }}" target="_blank" rel="noreferrer" class="inline-flex rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">
+                    Lihat File Saat Ini
+                </a>
+            </div>
+        @endif
+        <input id="attachment" name="attachment" type="file" class="block w-full rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-4 py-4 text-sm text-slate-600 file:mr-4 file:rounded-xl file:border-0 file:bg-slate-900 file:px-4 file:py-2 file:font-semibold file:text-white hover:file:bg-slate-800">
+        <p class="mt-2 text-xs text-slate-500">Bisa upload file apa pun. Jika file berupa PDF, frontend akan mencoba membukanya langsung di halaman browser.</p>
+        @error('attachment')
+            <p class="mt-2 text-sm text-rose-500">{{ $message }}</p>
+        @enderror
+    </div>
 </div>
