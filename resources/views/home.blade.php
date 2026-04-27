@@ -378,9 +378,10 @@
       <a href="#home" class="hover:text-[#c9a84c] transition-colors">Beranda</a>
       <a href="#edukasi" class="hover:text-[#c9a84c] transition-colors">Edukasi</a>
       <a href="#sinyal" class="hover:text-[#c9a84c] transition-colors">Sinyal Harian</a>
-      <a href="#jadwal-terbaru" class="hover:text-[#c9a84c] transition-colors">Jadwal Terbaru</a>
-      <a href="#lokasi" class="hover:text-[#c9a84c] transition-colors">Lokasi</a>
+      <a href="#komunitas" class="hover:text-[#c9a84c] transition-colors">Komunitas</a>
       <a href="#sosmed" class="hover:text-[#c9a84c] transition-colors">Sosial Media</a>
+      <a href="#jadwal-terbaru" class="hover:text-[#c9a84c] transition-colors">Jadwal</a>
+      <a href="#lokasi" class="hover:text-[#c9a84c] transition-colors">Lokasi</a>
     </div>
     <a href="#broker" class="btn-gold px-4 py-2 rounded-full text-xs md:text-sm font-bold whitespace-nowrap">Buka Akun Trading</a>
   </nav>
@@ -388,12 +389,12 @@
   <!-- MOBILE TOP TABS -->
   <div class="md:hidden top-tabs">
     <a href="#home" class="top-tab active">Beranda</a>
-    <a href="#lokasi" class="top-tab">Lokasi</a>
-    <a href="#jadwal-terbaru" class="top-tab">Jadwal</a>
     <a href="#edukasi" class="top-tab">Edukasi</a>
     <a href="#sinyal" class="top-tab">Sinyal Harian</a>
     <a href="#komunitas" class="top-tab">Komunitas</a>
     <a href="#sosmed" class="top-tab">Sosial Media</a>
+    <a href="#jadwal-terbaru" class="top-tab">Jadwal</a>
+    <a href="#lokasi" class="top-tab">Lokasi</a>
   </div>
 
   <!-- ===== HERO ===== -->
