@@ -11,6 +11,22 @@ use Illuminate\View\View;
 
 class DailySignalController extends Controller
 {
+    private function normalizeSignalTime(mixed $value): ?string
+    {
+        if (! filled($value)) {
+            return null;
+        }
+
+        $time = trim((string) $value);
+        $time = str_replace('.', ':', $time);
+
+        if (preg_match('/^\d{2}:\d{2}:\d{2}$/', $time) === 1) {
+            $time = substr($time, 0, 5);
+        }
+
+        return $time;
+    }
+
     public function index(string $type): View
     {
         abort_unless(in_array($type, ['forex', 'saham'], true), 404);
@@ -39,9 +55,10 @@ class DailySignalController extends Controller
                     ->except(['type', 'sort_order', 'position'])
                     ->contains(fn ($value) => filled($value));
             })
-            ->map(function ($signal) {
+            ->map(function ($signal) use ($type) {
                 $signal['type'] = $signal['type'] ?? $type;
                 $signal['position'] = $signal['position'] ?? 'buy';
+                $signal['signal_time'] = $this->normalizeSignalTime($signal['signal_time'] ?? null);
 
                 return $signal;
             })

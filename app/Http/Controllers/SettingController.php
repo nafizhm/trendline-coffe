@@ -26,6 +26,7 @@ class SettingController extends Controller
         $data = $request->validate([
             'app_name' => ['required', 'string', 'max:255'],
             'direct_wa_number' => ['required', 'string', 'max:30'],
+            'direct_wa_message' => ['nullable', 'string'],
             'address' => ['nullable', 'string'],
             'operational_hours' => ['nullable', 'string', 'max:255'],
             'reservation_info' => ['nullable', 'string'],

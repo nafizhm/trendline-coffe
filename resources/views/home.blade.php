@@ -7,7 +7,10 @@
   $appSetting = \App\Models\AppSetting::query()->first();
   $appName = $appSetting?->app_name ?: 'Trendline';
   $waNumber = preg_replace('/\D+/', '', $appSetting?->direct_wa_number ?? '');
-  $waLink = $waNumber ? 'https://wa.me/' . $waNumber . '?text=' . rawurlencode('Halo admin, saya tertarik belajar trading di ' . $appName) : '#';
+  $waMessage = filled($appSetting?->direct_wa_message)
+    ? $appSetting->direct_wa_message
+    : 'Halo admin, saya tertarik belajar trading di ' . $appName;
+  $waLink = $waNumber ? 'https://wa.me/' . $waNumber . '?text=' . rawurlencode($waMessage) : '#';
   $logoUrl = $appSetting?->logo_path ? route('public.settings.files.show', 'logo') : null;
   $ownerPhotoUrl = $appSetting?->owner_photo_path ? route('public.settings.files.show', 'owner-photo') : null;
   $primaryBrokerLink = route('public.referral-links.index', ['type' => 'forex']);

@@ -13,7 +13,9 @@
             'pair_name' => $signal->pair_name,
             'position' => $signal->position,
             'signal_date' => optional($signal->signal_date)->format('Y-m-d'),
-            'signal_time' => $signal->signal_time,
+            'signal_time' => filled($signal->signal_time)
+                ? substr(str_replace('.', ':', (string) $signal->signal_time), 0, 5)
+                : null,
             'entry_value' => $signal->entry_value,
             'target_value' => $signal->target_value,
             'stop_value' => $signal->stop_value,

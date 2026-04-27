@@ -56,6 +56,15 @@
                             <p class="mt-2 text-sm text-rose-500">{{ $message }}</p>
                         @enderror
                     </div>
+
+                    <div class="md:col-span-2">
+                        <label for="direct_wa_message" class="mb-2 block text-sm font-semibold text-slate-700">Teks Pesan Direct WA</label>
+                        <textarea id="direct_wa_message" name="direct_wa_message" rows="3" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-amber-400 focus:outline-none">{{ old('direct_wa_message', $setting->direct_wa_message) }}</textarea>
+                        <p class="mt-2 text-xs text-slate-500">Pesan ini akan dipakai otomatis saat pengunjung klik tombol WhatsApp di halaman depan.</p>
+                        @error('direct_wa_message')
+                            <p class="mt-2 text-sm text-rose-500">{{ $message }}</p>
+                        @enderror
+                    </div>
                 </div>
             </section>
 

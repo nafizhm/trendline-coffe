@@ -9,6 +9,7 @@ class AppSetting extends Model
     protected $fillable = [
         'app_name',
         'direct_wa_number',
+        'direct_wa_message',
         'address',
         'operational_hours',
         'reservation_info',
