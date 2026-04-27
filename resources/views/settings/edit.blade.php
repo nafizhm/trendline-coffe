@@ -135,22 +135,6 @@
             <section class="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm">
                 <div class="grid gap-5 md:grid-cols-2">
                     <div>
-                        <label for="forex_referral_link" class="mb-2 block text-sm font-semibold text-slate-700">Link Referal Forex</label>
-                        <input id="forex_referral_link" name="forex_referral_link" type="url" value="{{ old('forex_referral_link', $setting->forex_referral_link) }}" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-amber-400 focus:outline-none">
-                        @error('forex_referral_link')
-                            <p class="mt-2 text-sm text-rose-500">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    <div>
-                        <label for="ihsg_stock_referral_link" class="mb-2 block text-sm font-semibold text-slate-700">Link Referal Saham IHSG</label>
-                        <input id="ihsg_stock_referral_link" name="ihsg_stock_referral_link" type="url" value="{{ old('ihsg_stock_referral_link', $setting->ihsg_stock_referral_link) }}" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-amber-400 focus:outline-none">
-                        @error('ihsg_stock_referral_link')
-                            <p class="mt-2 text-sm text-rose-500">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    <div>
                         <label for="wa_group_link" class="mb-2 block text-sm font-semibold text-slate-700">Link Group WA</label>
                         <input id="wa_group_link" name="wa_group_link" type="url" value="{{ old('wa_group_link', $setting->wa_group_link) }}" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-amber-400 focus:outline-none">
                         @error('wa_group_link')
@@ -167,9 +151,25 @@
                     </div>
 
                     <div>
+                        <label for="facebook_link" class="mb-2 block text-sm font-semibold text-slate-700">Link Akun Facebook</label>
+                        <input id="facebook_link" name="facebook_link" type="url" value="{{ old('facebook_link', $setting->facebook_link) }}" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-amber-400 focus:outline-none">
+                        @error('facebook_link')
+                            <p class="mt-2 text-sm text-rose-500">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div>
                         <label for="instagram_link" class="mb-2 block text-sm font-semibold text-slate-700">Link Akun IG</label>
                         <input id="instagram_link" name="instagram_link" type="url" value="{{ old('instagram_link', $setting->instagram_link) }}" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-amber-400 focus:outline-none">
                         @error('instagram_link')
+                            <p class="mt-2 text-sm text-rose-500">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div>
+                        <label for="youtube_link" class="mb-2 block text-sm font-semibold text-slate-700">Link Akun YouTube</label>
+                        <input id="youtube_link" name="youtube_link" type="url" value="{{ old('youtube_link', $setting->youtube_link) }}" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-amber-400 focus:outline-none">
+                        @error('youtube_link')
                             <p class="mt-2 text-sm text-rose-500">{{ $message }}</p>
                         @enderror
                     </div>

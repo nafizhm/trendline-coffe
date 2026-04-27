@@ -88,29 +88,17 @@
                             </span>
                             <span class="sidebar-label">Dashboard</span>
                         </a>
-                        <a href="{{ route('accounts.index') }}" class="sidebar-link {{ request()->routeIs('accounts.*') ? 'active' : '' }} flex items-center gap-2.5 rounded-xl border border-transparent px-3 py-2.5 text-sm font-semibold text-slate-600">
+                        <a href="{{ route('contents.index') }}" class="sidebar-link {{ request()->routeIs('contents.*') ? 'active' : '' }} flex items-center gap-2.5 rounded-xl border border-transparent px-3 py-2.5 text-sm font-semibold text-slate-600">
                             <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-slate-700">
-                                <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20h10M12 12a4 4 0 100-8 4 4 0 000 8z"/></svg>
+                                <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 4.5h9A1.5 1.5 0 0118 6v12a1.5 1.5 0 01-1.5 1.5h-9A1.5 1.5 0 016 18V6a1.5 1.5 0 011.5-1.5z"/><path stroke-linecap="round" stroke-linejoin="round" d="M9 8.25h6M9 12h6M9 15.75h3"/></svg>
                             </span>
-                            <span class="sidebar-label">Pengaturan Akun</span>
-                        </a>
-                        <a href="{{ route('categories.index') }}" class="sidebar-link {{ request()->routeIs('categories.*') ? 'active' : '' }} flex items-center gap-2.5 rounded-xl border border-transparent px-3 py-2.5 text-sm font-semibold text-slate-600">
-                            <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-slate-700">
-                                <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 6h12M4.5 6h.008v.008H4.5V6zm3 6h12M4.5 12h.008v.008H4.5V12zm3 6h12M4.5 18h.008v.008H4.5V18z"/></svg>
-                            </span>
-                            <span class="sidebar-label">Kategori</span>
+                            <span class="sidebar-label">Konten</span>
                         </a>
                         <a href="{{ route('articles.index') }}" class="sidebar-link {{ request()->routeIs('articles.*') ? 'active' : '' }} flex items-center gap-2.5 rounded-xl border border-transparent px-3 py-2.5 text-sm font-semibold text-slate-600">
                             <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-slate-700">
                                 <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 5.25A2.25 2.25 0 018.25 3h8.129a2.25 2.25 0 011.591.659l1.371 1.371A2.25 2.25 0 0120 6.621V18.75A2.25 2.25 0 0117.75 21h-9.5A2.25 2.25 0 016 18.75V5.25z"/><path stroke-linecap="round" stroke-linejoin="round" d="M9 8.25h6M9 12h6M9 15.75h4.5"/></svg>
                             </span>
                             <span class="sidebar-label">Artikel</span>
-                        </a>
-                        <a href="{{ route('contents.index') }}" class="sidebar-link {{ request()->routeIs('contents.*') ? 'active' : '' }} flex items-center gap-2.5 rounded-xl border border-transparent px-3 py-2.5 text-sm font-semibold text-slate-600">
-                            <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-slate-700">
-                                <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 4.5h9A1.5 1.5 0 0118 6v12a1.5 1.5 0 01-1.5 1.5h-9A1.5 1.5 0 016 18V6a1.5 1.5 0 011.5-1.5z"/><path stroke-linecap="round" stroke-linejoin="round" d="M9 8.25h6M9 12h6M9 15.75h3"/></svg>
-                            </span>
-                            <span class="sidebar-label">Konten</span>
                         </a>
                         <a href="{{ route('videos.index') }}" class="sidebar-link {{ request()->routeIs('videos.*') ? 'active' : '' }} flex items-center gap-2.5 rounded-xl border border-transparent px-3 py-2.5 text-sm font-semibold text-slate-600">
                             <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-slate-700">
@@ -142,11 +130,23 @@
                             </span>
                             <span class="sidebar-label">Sinyal Harian Saham</span>
                         </a>
+                        <a href="{{ route('categories.index') }}" class="sidebar-link {{ request()->routeIs('categories.*') ? 'active' : '' }} flex items-center gap-2.5 rounded-xl border border-transparent px-3 py-2.5 text-sm font-semibold text-slate-600">
+                            <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-slate-700">
+                                <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 6h12M4.5 6h.008v.008H4.5V6zm3 6h12M4.5 12h.008v.008H4.5V12zm3 6h12M4.5 18h.008v.008H4.5V18z"/></svg>
+                            </span>
+                            <span class="sidebar-label">Kategori</span>
+                        </a>
                         <a href="{{ route('settings.edit') }}" class="sidebar-link {{ request()->routeIs('settings.*') ? 'active' : '' }} flex items-center gap-2.5 rounded-xl border border-transparent px-3 py-2.5 text-sm font-semibold text-slate-600">
                             <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-slate-700">
                                 <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12a7.5 7.5 0 0012.91 5.303l1.996.72a.75.75 0 00.961-.96l-.72-1.997A7.5 7.5 0 104.5 12z"/><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 12a2.25 2.25 0 114.5 0 2.25 2.25 0 01-4.5 0z"/></svg>
                             </span>
                             <span class="sidebar-label">Pengaturan</span>
+                        </a>
+                        <a href="{{ route('accounts.index') }}" class="sidebar-link {{ request()->routeIs('accounts.*') ? 'active' : '' }} flex items-center gap-2.5 rounded-xl border border-transparent px-3 py-2.5 text-sm font-semibold text-slate-600">
+                            <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-slate-700">
+                                <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20h10M12 12a4 4 0 100-8 4 4 0 000 8z"/></svg>
+                            </span>
+                            <span class="sidebar-label">Pengaturan Akun</span>
                         </a>
                     </nav>
                 </div>
