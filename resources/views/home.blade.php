@@ -76,13 +76,20 @@
     return collect([$formattedDate, $formattedTime])->filter()->implode(' • ');
   };
   $categoryCollection = \App\Models\Category::query()->orderBy('name')->get();
-  $categoryLookup = $categoryCollection->mapWithKeys(fn ($category) => [strtolower($category->name) => $category]);
+  $resolveCategory = function (string $key) use ($categoryCollection) {
+    return $categoryCollection->first(function ($category) use ($key) {
+      $normalizedName = strtolower($category->name);
+
+      return $normalizedName === $key
+        || ($key === 'emas' && str_contains($normalizedName, 'emas'));
+    });
+  };
   $educationTabs = collect([
     'forex' => ['label' => 'Forex'],
     'saham' => ['label' => 'Saham'],
     'emas' => ['label' => 'Emas'],
-  ])->map(function (array $tab, string $key) use ($categoryLookup) {
-    $category = $categoryLookup->get($key);
+  ])->map(function (array $tab, string $key) use ($resolveCategory) {
+    $category = $resolveCategory($key);
 
     return [
       'label' => $tab['label'],

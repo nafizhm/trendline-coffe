@@ -16,11 +16,7 @@ class ArticleController extends Controller
     public function publicIndex(Request $request): View
     {
         $categoryKey = strtolower((string) $request->query('category'));
-        $category = blank($categoryKey)
-            ? null
-            : Category::query()
-                ->get()
-                ->first(fn (Category $category) => strtolower($category->name) === $categoryKey);
+        $category = $this->resolvePublicCategory($categoryKey);
 
         $articles = Article::query()
             ->with('category')
@@ -158,5 +154,21 @@ class ArticleController extends Controller
     private function isPdfAttachment(?string $path): bool
     {
         return filled($path) && strtolower(pathinfo($path, PATHINFO_EXTENSION)) === 'pdf';
+    }
+
+    private function resolvePublicCategory(string $categoryKey): ?Category
+    {
+        if (blank($categoryKey)) {
+            return null;
+        }
+
+        return Category::query()
+            ->get()
+            ->first(function (Category $category) use ($categoryKey) {
+                $normalizedName = strtolower($category->name);
+
+                return $normalizedName === $categoryKey
+                    || ($categoryKey === 'emas' && str_contains($normalizedName, 'emas'));
+            });
     }
 }
