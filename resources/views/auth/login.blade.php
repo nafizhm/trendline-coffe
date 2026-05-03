@@ -1,99 +1,435 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Trendline Coffee</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Trendline Login</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --sage: #6b7a5e;
+            --sage-dark: #4e5a45;
+            --sage-light: #8a9b7a;
+            --cream: #f5f2ec;
+            --cream-dark: #ede9e0;
+            --text: #2c3021;
+            --muted: #8a9070;
+            --white: #ffffff;
+            --danger: #b14a4a;
+            --success-bg: #edf7ee;
+            --success-text: #35613a;
+            --radius: 14px;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
         body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background:
-                radial-gradient(circle at top right, rgba(201, 168, 76, 0.22), transparent 28%),
-                linear-gradient(160deg, #0a1628 0%, #0d2248 58%, #1a3060 100%);
-            color: #fff;
+            font-family: "DM Sans", sans-serif;
+            background-color: var(--cream);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 24px 16px;
+            position: relative;
+            overflow-x: hidden;
+            color: var(--text);
         }
-        .font-display {
-            font-family: 'Playfair Display', serif;
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background-image:
+                radial-gradient(circle at 20% 20%, rgba(107, 122, 94, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(107, 122, 94, 0.06) 0%, transparent 50%);
+            pointer-events: none;
         }
-        .glass {
-            background: rgba(255, 255, 255, 0.06);
-            backdrop-filter: blur(16px);
-            border: 1px solid rgba(201, 168, 76, 0.22);
+
+        .card {
+            position: relative;
+            z-index: 1;
+            background: var(--white);
+            border-radius: 24px;
+            padding: 40px 32px 36px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow:
+                0 2px 4px rgba(44, 48, 33, 0.04),
+                0 8px 24px rgba(44, 48, 33, 0.08),
+                0 0 0 1px rgba(107, 122, 94, 0.1);
+            animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+
+        .logo-wrap {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 32px;
+        }
+
+        .logo-img {
+            width: 140px;
+            height: auto;
+            animation: fadeIn 0.6s ease 0.1s both;
+        }
+
+        .logo-tagline {
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--muted);
+            text-align: center;
+        }
+
+        .heading {
+            font-family: "DM Serif Display", serif;
+            font-size: 22px;
+            color: var(--text);
+            text-align: center;
+            margin-bottom: 10px;
+            line-height: 1.3;
+        }
+
+        .subheading {
+            text-align: center;
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.7;
+            margin-bottom: 24px;
+        }
+
+        .status-error,
+        .status-success {
+            margin-bottom: 16px;
+            border-radius: 14px;
+            padding: 12px 14px;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .status-error {
+            background: #fff4f4;
+            color: var(--danger);
+        }
+
+        .status-success {
+            background: var(--success-bg);
+            color: var(--success-text);
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--sage-dark);
+            margin-bottom: 6px;
+            letter-spacing: 0.02em;
+        }
+
+        input {
+            width: 100%;
+            padding: 13px 16px;
+            border: 1.5px solid var(--cream-dark);
+            border-radius: var(--radius);
+            font: inherit;
+            font-size: 15px;
+            color: var(--text);
+            background: var(--cream);
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+            appearance: none;
+        }
+
+        input::placeholder {
+            color: var(--muted);
+        }
+
+        input:focus {
+            border-color: var(--sage);
+            background: var(--white);
+            box-shadow: 0 0 0 3px rgba(107, 122, 94, 0.12);
+        }
+
+        .input-error {
+            border-color: rgba(177, 74, 74, 0.45);
+            background: #fff8f8;
+        }
+
+        .pw-wrap {
+            position: relative;
+        }
+
+        .pw-wrap input {
+            padding-right: 46px;
+        }
+
+        .pw-toggle {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+            color: var(--muted);
+            display: flex;
+            align-items: center;
+            transition: color 0.2s;
+        }
+
+        .pw-toggle:hover {
+            color: var(--sage);
+        }
+
+        .error-text {
+            margin-top: 8px;
+            color: var(--danger);
+            font-size: 12.5px;
+            line-height: 1.5;
+        }
+
+        .remember-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 2px;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .remember-row input {
+            width: 16px;
+            height: 16px;
+            padding: 0;
+            border-radius: 5px;
+            accent-color: var(--sage);
+            box-shadow: none;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 14px;
+            margin-top: 24px;
+            background: var(--sage);
+            color: var(--white);
+            border: none;
+            border-radius: var(--radius);
+            font: inherit;
+            font-size: 15px;
+            font-weight: 600;
+            letter-spacing: 0.03em;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+            box-shadow: 0 4px 14px rgba(107, 122, 94, 0.35);
+        }
+
+        .btn-login:hover {
+            background: var(--sage-dark);
+            box-shadow: 0 6px 18px rgba(107, 122, 94, 0.45);
+        }
+
+        .btn-login:active {
+            transform: scale(0.98);
+        }
+
+        .btn-login.loading {
+            pointer-events: none;
+            opacity: 0.75;
+        }
+
+        .btn-login.loading::after {
+            content: "";
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+
+        .footer {
+            position: relative;
+            z-index: 1;
+            margin-top: 24px;
+            font-size: 11.5px;
+            color: var(--muted);
+            text-align: center;
+            line-height: 1.6;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .card {
+                padding: 32px 22px 28px;
+                border-radius: 20px;
+            }
+
+            .logo-img {
+                width: 124px;
+            }
         }
     </style>
 </head>
-<body class="min-h-screen">
-    <div class="mx-auto flex min-h-screen max-w-7xl items-center px-4 py-8 sm:px-6 lg:px-8">
-        <div class="grid w-full gap-8 lg:grid-cols-[1.15fr_0.85fr]">
-            <section class="hidden rounded-[2rem] border border-amber-300/15 bg-white/5 p-10 lg:block">
-                <p class="text-sm font-semibold uppercase tracking-[0.45em] text-amber-200/70">Trendline</p>
-                <h1 class="font-display mt-4 max-w-xl text-5xl font-black leading-tight text-white">
-                    Coffee, Trading, dan Dashboard internal dalam satu panel.
-                </h1>
-                <p class="mt-6 max-w-2xl text-base leading-8 text-slate-200/80">
-                    Tampilan login ini mengadopsi nuansa frontend terlampir: dominan navy, aksen gold, dan glass card modern.
-                </p>
-
-                <div class="mt-10 grid gap-4 md:grid-cols-3">
-                    <div class="glass rounded-3xl p-5">
-                        <p class="text-xs uppercase tracking-[0.25em] text-amber-200/60">Akses</p>
-                        <p class="mt-3 text-lg font-bold">Login pakai username</p>
-                    </div>
-                    <div class="glass rounded-3xl p-5">
-                        <p class="text-xs uppercase tracking-[0.25em] text-amber-200/60">Panel</p>
-                        <p class="mt-3 text-lg font-bold">Dashboard & akun</p>
-                    </div>
-                    <div class="glass rounded-3xl p-5">
-                        <p class="text-xs uppercase tracking-[0.25em] text-amber-200/60">Style</p>
-                        <p class="mt-3 text-lg font-bold">Tailwind sidebar kiri</p>
-                    </div>
-                </div>
-            </section>
-
-            <section class="glass rounded-[2rem] p-6 shadow-2xl shadow-slate-950/40 sm:p-8 lg:p-10">
-                <p class="text-sm font-semibold uppercase tracking-[0.35em] text-amber-200/70">Masuk Ke Sistem</p>
-                <h2 class="font-display mt-3 text-4xl font-black text-white">Login</h2>
-                <p class="mt-3 text-sm leading-7 text-slate-200/75">Gunakan username yang sudah didaftarkan untuk masuk ke dashboard.</p>
-
-                @if (session('status'))
-                    <div class="mt-6 rounded-2xl border border-emerald-400/20 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-100">
-                        {{ session('status') }}
-                    </div>
-                @endif
-
-                <form action="{{ route('login.attempt') }}" method="POST" class="mt-8 space-y-5">
-                    @csrf
-                    <div>
-                        <label for="username" class="mb-2 block text-sm font-semibold text-slate-100">Username</label>
-                        <input id="username" name="username" type="text" value="{{ old('username') }}" class="w-full rounded-2xl border border-white/10 bg-slate-950/25 px-4 py-3 text-white outline-none ring-0 placeholder:text-slate-400 focus:border-amber-300" placeholder="Masukkan username">
-                        @error('username')
-                            <p class="mt-2 text-sm text-rose-300">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    <div>
-                        <label for="password" class="mb-2 block text-sm font-semibold text-slate-100">Password</label>
-                        <input id="password" name="password" type="password" class="w-full rounded-2xl border border-white/10 bg-slate-950/25 px-4 py-3 text-white outline-none ring-0 placeholder:text-slate-400 focus:border-amber-300" placeholder="Masukkan password">
-                        @error('password')
-                            <p class="mt-2 text-sm text-rose-300">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    <label class="flex items-center gap-3 text-sm text-slate-200/80">
-                        <input type="checkbox" name="remember" class="h-4 w-4 rounded border-white/20 bg-slate-950/25 text-amber-400 focus:ring-amber-300">
-                        Ingat saya
-                    </label>
-
-                    <button type="submit" class="w-full rounded-2xl bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-400 px-4 py-3 text-sm font-extrabold text-slate-950 shadow-lg shadow-amber-500/20 transition hover:-translate-y-0.5">
-                        Masuk
-                    </button>
-                </form>
-            </section>
+<body>
+    <div class="card">
+        <div class="logo-wrap">
+            <img
+                src="{{ asset('images/trendline-logo.png') }}"
+                alt="Trendline Logo"
+                class="logo-img"
+            >
+            <span class="logo-tagline">Trendline Coffee Admin Access</span>
         </div>
+
+        <h1 class="heading">Selamat datang kembali</h1>
+        <p class="subheading">Masuk dengan akun admin untuk mengelola dashboard Trendline Coffee dan data kuesioner.</p>
+
+        @if (session('status'))
+            <div class="status-success">{{ session('status') }}</div>
+        @endif
+
+        @if ($errors->has('username') && ! $errors->has('password'))
+            <div class="status-error">{{ $errors->first('username') }}</div>
+        @endif
+
+        <form method="POST" action="{{ route('login.attempt') }}" id="loginForm" novalidate>
+            @csrf
+
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input
+                    id="username"
+                    name="username"
+                    type="text"
+                    value="{{ old('username') }}"
+                    placeholder="Masukkan username"
+                    autocomplete="username"
+                    required
+                    class="@error('username') input-error @enderror"
+                >
+                @error('username')
+                    @if ($message !== 'Username atau password tidak sesuai.')
+                        <div class="error-text">{{ $message }}</div>
+                    @endif
+                @enderror
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <div class="pw-wrap">
+                    <input
+                        id="password"
+                        name="password"
+                        type="password"
+                        placeholder="Masukkan password"
+                        autocomplete="current-password"
+                        required
+                        class="@error('password') input-error @enderror"
+                    >
+                    <button type="button" class="pw-toggle" aria-label="Tampilkan password" id="togglePw">
+                        <svg id="eyeIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </button>
+                </div>
+                @error('password')
+                    <div class="error-text">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <label class="remember-row" for="remember">
+                <input id="remember" name="remember" type="checkbox" value="1" @checked(old('remember'))>
+                Tetap masuk di perangkat ini
+            </label>
+
+            <button type="submit" class="btn-login" id="loginBtn">Masuk</button>
+        </form>
     </div>
+
+    <p class="footer">&copy; 2026 Trendline Coffee | Area admin internal</p>
+
+    <script>
+        (() => {
+            const togglePw = document.getElementById('togglePw');
+            const pwInput = document.getElementById('password');
+            const eyeIcon = document.getElementById('eyeIcon');
+            const loginForm = document.getElementById('loginForm');
+            const loginBtn = document.getElementById('loginBtn');
+
+            if (togglePw && pwInput && eyeIcon) {
+                const eyeOpen = `
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                `;
+                const eyeOff = `
+                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"></path>
+                    <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"></path>
+                    <line x1="1" y1="1" x2="23" y2="23"></line>
+                `;
+
+                togglePw.addEventListener('click', () => {
+                    const show = pwInput.type === 'password';
+                    pwInput.type = show ? 'text' : 'password';
+                    eyeIcon.innerHTML = show ? eyeOff : eyeOpen;
+                    togglePw.setAttribute('aria-label', show ? 'Sembunyikan password' : 'Tampilkan password');
+                });
+            }
+
+            if (loginForm && loginBtn) {
+                loginForm.addEventListener('submit', () => {
+                    loginBtn.textContent = 'Memproses';
+                    loginBtn.classList.add('loading');
+                });
+            }
+        })();
+    </script>
 </body>
 </html>

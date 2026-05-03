@@ -8,6 +8,9 @@ use App\Http\Controllers\ContentController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DailySignalController;
 use App\Http\Controllers\LatestScheduleController;
+use App\Http\Controllers\QuestionnaireDataController;
+use App\Http\Controllers\QuestionnaireFrontendController;
+use App\Http\Controllers\QuestionnaireQuestionController;
 use App\Http\Controllers\ReferralLinkController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\VideoController;
@@ -20,6 +23,9 @@ Route::get('/edukasi/artikel/{article}', [ArticleController::class, 'publicShow'
 Route::get('/edukasi/artikel/{article}/file', [ArticleController::class, 'showAttachment'])->name('public.articles.files.show');
 Route::get('/edukasi/video', [VideoController::class, 'publicIndex'])->name('public.videos.index');
 Route::get('/buka-akun/{type}', [ReferralLinkController::class, 'publicIndex'])->name('public.referral-links.index');
+Route::get('/kuesioner', [QuestionnaireFrontendController::class, 'index'])->name('kuesioner.index');
+Route::post('/kuesioner', [QuestionnaireFrontendController::class, 'store'])->name('kuesioner.store');
+Route::get('/kuesioner/terima-kasih', [QuestionnaireFrontendController::class, 'thankYou'])->name('kuesioner.thank-you');
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
@@ -51,6 +57,13 @@ Route::middleware('auth')->group(function () {
     Route::resource('/latest-schedules', LatestScheduleController::class)
         ->parameters(['latest-schedules' => 'latestSchedule'])
         ->except(['show', 'create', 'edit']);
+    Route::get('/data-kuesioner', [QuestionnaireDataController::class, 'index'])->name('questionnaires.index');
+    Route::post('/data-kuesioner/cetak', [QuestionnaireDataController::class, 'printReport'])->name('questionnaires.print');
+    Route::delete('/data-kuesioner/{questionnaire}', [QuestionnaireDataController::class, 'destroy'])->name('questionnaires.destroy');
+    Route::get('/pertanyaan-kuesioner', [QuestionnaireQuestionController::class, 'index'])->name('questionnaire-questions.index');
+    Route::post('/pertanyaan-kuesioner', [QuestionnaireQuestionController::class, 'store'])->name('questionnaire-questions.store');
+    Route::put('/pertanyaan-kuesioner/{questionnaireQuestion}', [QuestionnaireQuestionController::class, 'update'])->name('questionnaire-questions.update');
+    Route::delete('/pertanyaan-kuesioner/{questionnaireQuestion}', [QuestionnaireQuestionController::class, 'destroy'])->name('questionnaire-questions.destroy');
     Route::get('/daily-signals/{type}', [DailySignalController::class, 'index'])->name('daily-signals.index');
     Route::put('/daily-signals/{type}', [DailySignalController::class, 'update'])->name('daily-signals.update');
     Route::get('/settings', [SettingController::class, 'edit'])->name('settings.edit');
