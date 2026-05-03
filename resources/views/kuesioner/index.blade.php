@@ -2,7 +2,7 @@
 
 @section('content')
     @php
-        $totalSections = $questions->count() + 1;
+        $totalSections = $questions->count();
     @endphp
 
     <div class="header">
@@ -44,23 +44,6 @@
                 @enderror
             </section>
         @endforeach
-
-        <section class="q-card" style="animation-delay: {{ number_format($questions->count() * 0.05, 2) }}s">
-            <div class="q-number">{{ str_pad((string) ($questions->count() + 1), 2, '0', STR_PAD_LEFT) }} - Saran &amp; Masukan</div>
-            <div class="q-text">Ada saran atau masukan untuk membuat Trendline lebih baik?</div>
-            <textarea
-                class="field-textarea field-saran js-progress-field @error('suggestion') field-error @enderror"
-                id="suggestion"
-                name="suggestion"
-                placeholder="Tuliskan apa pun yang ingin Anda sampaikan. Setiap masukan sangat berarti bagi kami."
-                required
-            >{{ old('suggestion') }}</textarea>
-            @if ($errors->has('suggestion'))
-                <div class="error-text">{{ $errors->first('suggestion') }}</div>
-            @else
-                <div class="helper-text">Bagian ini wajib diisi agar tim kami bisa menindaklanjuti feedback Anda.</div>
-            @endif
-        </section>
 
         <div class="submit-wrap">
             <button class="submit-btn" type="submit">Kirim Feedback</button>

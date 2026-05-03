@@ -30,7 +30,6 @@ class QuestionnaireFrontendController extends Controller
             ->get();
 
         $rules = [
-            'suggestion' => ['required', 'string', 'min:10', 'max:1000'],
         ];
 
         foreach ($questions as $question) {
@@ -38,13 +37,10 @@ class QuestionnaireFrontendController extends Controller
             $messages['answers.'.$question->id.'.required'] = 'Jawaban pertanyaan ini wajib diisi.';
         }
 
-        $validated = $request->validate($rules, array_merge([
-            'suggestion.required' => 'Saran tidak boleh kosong.',
-            'suggestion.min' => 'Tulis saran minimal 10 karakter agar lebih jelas.',
-        ], $messages ?? []));
+        $validated = $request->validate($rules, $messages ?? []);
 
         $suggestion = QuestionnaireSuggestion::create([
-            'suggestion' => $validated['suggestion'],
+            'suggestion' => 'Tanpa saran tambahan.',
         ]);
 
         foreach ($questions as $question) {
