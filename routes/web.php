@@ -18,6 +18,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'home')->name('home');
 Route::get('/media/settings/{field}', [SettingController::class, 'showFile'])->name('public.settings.files.show');
+Route::get('/referral-logo/{referralLink}', [ReferralLinkController::class, 'showLogo'])->name('public.referral-links.logo.show');
+Route::get('/media/referral-links/{referralLink}/logo', [ReferralLinkController::class, 'showLogo'])->name('public.referral-links.logo.legacy');
 Route::get('/edukasi/artikel', [ArticleController::class, 'publicIndex'])->name('public.articles.index');
 Route::get('/edukasi/artikel/{article}', [ArticleController::class, 'publicShow'])->name('public.articles.show');
 Route::get('/edukasi/artikel/{article}/file', [ArticleController::class, 'showAttachment'])->name('public.articles.files.show');

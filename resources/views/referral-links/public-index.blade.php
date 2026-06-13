@@ -49,7 +49,7 @@
                 >
                     <div class="flex h-28 items-center justify-center rounded-[24px] bg-white/95 p-5">
                         @if ($referralLink->logo_path)
-                            <img src="{{ asset('storage/' . $referralLink->logo_path) }}" alt="{{ $referralLink->name }} logo" class="max-h-full w-auto object-contain">
+                            <img src="{{ route('public.referral-links.logo.show', $referralLink) }}" alt="{{ $referralLink->name }} logo" class="max-h-full w-auto object-contain">
                         @else
                             <div class="text-center">
                                 <div class="text-lg font-black text-slate-900">{{ $referralLink->name }}</div>

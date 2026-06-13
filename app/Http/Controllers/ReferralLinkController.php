@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\ReferralLink;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ReferralLinkController extends Controller
 {
@@ -29,6 +31,17 @@ class ReferralLinkController extends Controller
         return view('referral-links.index', [
             'referralLinks' => ReferralLink::query()->latest()->get(),
         ]);
+    }
+
+    public function showLogo(ReferralLink $referralLink): StreamedResponse
+    {
+        abort_if(blank($referralLink->logo_path), 404);
+
+        try {
+            return Storage::disk('public')->response($referralLink->logo_path);
+        } catch (FileNotFoundException) {
+            abort(404);
+        }
     }
 
     public function store(Request $request): RedirectResponse

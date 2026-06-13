@@ -52,7 +52,7 @@
                                 <tr>
                                     <td class="px-5 py-4">
                                         @if ($referralLink->logo_path)
-                                            <img src="{{ asset('storage/' . $referralLink->logo_path) }}" alt="{{ $referralLink->name }} logo" class="h-12 w-12 rounded-2xl border border-slate-200 object-contain bg-white p-1">
+                                            <img src="{{ route('public.referral-links.logo.show', $referralLink) }}" alt="{{ $referralLink->name }} logo" class="h-12 w-12 rounded-2xl border border-slate-200 object-contain bg-white p-1">
                                         @else
                                             <div class="flex h-12 w-12 items-center justify-center rounded-2xl border border-dashed border-slate-200 text-xs font-semibold text-slate-400">
                                                 -
@@ -88,7 +88,7 @@
                                                 data-link="{{ $referralLink->link }}"
                                                 data-description="{{ $referralLink->description }}"
                                                 data-status="{{ $referralLink->status }}"
-                                                data-logo-url="{{ $referralLink->logo_path ? asset('storage/' . $referralLink->logo_path) : '' }}"
+                                                data-logo-url="{{ $referralLink->logo_path ? route('public.referral-links.logo.show', $referralLink) : '' }}"
                                                 data-update-url="{{ route('referral-links.update', $referralLink) }}"
                                                 class="rounded-xl border border-slate-200 px-3 py-2 text-xs font-bold text-slate-700 transition hover:bg-slate-50">
                                                 Edit
@@ -271,7 +271,7 @@
                 <div>
                     <label class="mb-2 block text-sm font-semibold text-slate-700">Logo Referal</label>
                     <div id="edit_logo_preview_wrapper" class="{{ $editingReferralLink?->logo_path ? '' : 'hidden' }} mb-3">
-                        <img id="edit_logo_preview" src="{{ $editingReferralLink?->logo_path ? asset('storage/' . $editingReferralLink->logo_path) : '' }}" alt="Preview logo referal" class="h-16 w-16 rounded-2xl border border-slate-200 object-contain bg-white p-1">
+                        <img id="edit_logo_preview" src="{{ $editingReferralLink?->logo_path ? route('public.referral-links.logo.show', $editingReferralLink) : '' }}" alt="Preview logo referal" class="h-16 w-16 rounded-2xl border border-slate-200 object-contain bg-white p-1">
                     </div>
                     <input name="logo" type="file" accept="image/*" class="block w-full rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-4 py-4 text-sm text-slate-600 file:mr-4 file:rounded-xl file:border-0 file:bg-slate-900 file:px-4 file:py-2 file:font-semibold file:text-white hover:file:bg-slate-800">
                     <p class="mt-2 text-xs text-slate-500">Kosongkan jika logo tidak ingin diganti.</p>

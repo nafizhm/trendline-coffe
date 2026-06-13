@@ -630,7 +630,6 @@
                 <p class="text-xs font-semibold uppercase tracking-[0.22em] text-[#c9a84c]">Artikel {{ $tab['label'] }}</p>
                 <h3 class="mt-1 text-lg font-black text-white">Berita & Insight Terbaru</h3>
               </div>
-              <a href="{{ route('public.articles.index', ['category' => $key]) }}" class="rounded-full border border-[rgba(201,168,76,0.28)] px-4 py-2 text-xs font-bold text-[#c9a84c] transition hover:bg-white/5">Semua Artikel</a>
             </div>
             <div class="grid gap-3 md:grid-cols-3">
               @forelse ($tab['articles'] as $article)
@@ -649,6 +648,9 @@
                   Belum ada artikel publish untuk kategori {{ $tab['label'] }}.
                 </div>
               @endforelse
+            </div>
+            <div class="mt-5 flex justify-center md:justify-end">
+              <a href="{{ route('public.articles.index', ['category' => $key]) }}" class="rounded-full border border-[rgba(201,168,76,0.28)] px-5 py-2.5 text-xs font-bold text-[#c9a84c] transition hover:bg-white/5">Semua Artikel</a>
             </div>
           </div>
         </div>
@@ -676,7 +678,6 @@
               <p class="text-xs font-semibold uppercase tracking-[0.22em] text-[#c9a84c]">Video {{ $tab['label'] }}</p>
               <h3 class="mt-1 text-lg font-black text-white">Tonton Materi Pilihan</h3>
             </div>
-            <a href="{{ route('public.videos.index', ['category' => $key]) }}" class="rounded-full border border-[rgba(201,168,76,0.28)] px-4 py-2 text-xs font-bold text-[#c9a84c] transition hover:bg-white/5">Semua Video</a>
           </div>
           <div class="grid gap-4 md:grid-cols-3">
             @forelse ($tab['videos'] as $video)
@@ -692,6 +693,9 @@
                 Belum ada video publish untuk kategori {{ $tab['label'] }}.
               </div>
             @endforelse
+          </div>
+          <div class="mt-5 flex justify-center md:justify-end">
+            <a href="{{ route('public.videos.index', ['category' => $key]) }}" class="rounded-full border border-[rgba(201,168,76,0.28)] px-5 py-2.5 text-xs font-bold text-[#c9a84c] transition hover:bg-white/5">Semua Video</a>
           </div>
         </div>
       @endforeach
