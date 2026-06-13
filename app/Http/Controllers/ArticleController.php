@@ -8,6 +8,7 @@ use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -28,7 +29,7 @@ class ArticleController extends Controller
 
         return view('public.articles.index', [
             'articles' => $articles,
-            'categories' => Category::query()->orderBy('name')->get(),
+            'categories' => $this->articleCategories()->get(),
             'activeCategoryKey' => $categoryKey,
         ]);
     }
@@ -73,7 +74,7 @@ class ArticleController extends Controller
     public function create(): View
     {
         return view('articles.create', [
-            'categories' => Category::query()->orderBy('name')->get(),
+            'categories' => $this->articleCategories()->get(),
         ]);
     }
 
@@ -94,7 +95,7 @@ class ArticleController extends Controller
     {
         return view('articles.edit', [
             'article' => $article,
-            'categories' => Category::query()->orderBy('name')->get(),
+            'categories' => $this->articleCategories()->get(),
         ]);
     }
 
@@ -125,7 +126,7 @@ class ArticleController extends Controller
         return $request->validate([
             'published_at' => ['required', 'date'],
             'title' => ['required', 'string', 'max:255'],
-            'category_id' => ['required', 'exists:categories,id'],
+            'category_id' => ['required', Rule::exists('categories', 'id')->where('type', Category::TYPE_ARTICLE)],
             'content' => ['required', 'string'],
             'attachment' => ['nullable', 'file'],
             'status' => ['required', 'in:publish,arsip'],
@@ -165,6 +166,7 @@ class ArticleController extends Controller
         $normalizedKey = $this->normalizeCategoryKey($categoryKey);
 
         return Category::query()
+            ->where('type', Category::TYPE_ARTICLE)
             ->get()
             ->first(function (Category $category) use ($normalizedKey) {
                 $normalizedName = $this->normalizeCategoryKey($category->name);
@@ -177,5 +179,12 @@ class ArticleController extends Controller
     private function normalizeCategoryKey(string $value): string
     {
         return str_replace([' ', '_'], '-', strtolower(trim($value)));
+    }
+
+    private function articleCategories()
+    {
+        return Category::query()
+            ->where('type', Category::TYPE_ARTICLE)
+            ->orderBy('name');
     }
 }

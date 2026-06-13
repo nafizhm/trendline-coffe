@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\Video;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class VideoController extends Controller
@@ -25,7 +26,7 @@ class VideoController extends Controller
 
         return view('public.videos.index', [
             'videos' => $videos,
-            'categories' => Category::query()->orderBy('name')->get(),
+            'categories' => $this->videoCategories()->get(),
             'activeCategoryKey' => $categoryKey,
         ]);
     }
@@ -37,7 +38,7 @@ class VideoController extends Controller
                 ->with('category')
                 ->latest()
                 ->get(),
-            'categories' => Category::query()->orderBy('name')->get(),
+            'categories' => $this->videoCategories()->get(),
         ]);
     }
 
@@ -71,7 +72,7 @@ class VideoController extends Controller
         return $request->validate([
             'published_at' => ['required', 'date'],
             'title' => ['required', 'string', 'max:255'],
-            'category_id' => ['required', 'exists:categories,id'],
+            'category_id' => ['required', Rule::exists('categories', 'id')->where('type', Category::TYPE_VIDEO)],
             'youtube_code' => ['required', 'string', 'max:20', 'regex:/^[A-Za-z0-9_-]+$/'],
             'status' => ['required', 'in:publish,arsip'],
             'admin_name' => ['required', 'string', 'max:255'],
@@ -103,6 +104,7 @@ class VideoController extends Controller
         $keys = array_merge([$normalizedKey], $aliases);
 
         return Category::query()
+            ->where('type', Category::TYPE_VIDEO)
             ->get()
             ->first(function (Category $category) use ($keys) {
                 $normalizedName = $this->normalizeCategoryKey($category->name);
@@ -115,5 +117,12 @@ class VideoController extends Controller
     private function normalizeCategoryKey(string $value): string
     {
         return str_replace([' ', '_'], '-', strtolower(trim($value)));
+    }
+
+    private function videoCategories()
+    {
+        return Category::query()
+            ->where('type', Category::TYPE_VIDEO)
+            ->orderBy('name');
     }
 }

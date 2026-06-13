@@ -38,6 +38,7 @@
                         <thead class="bg-slate-50">
                             <tr class="text-left text-xs uppercase tracking-[0.22em] text-slate-500">
                                 <th class="px-5 py-4">Nama Kategori</th>
+                                <th class="px-5 py-4">Tipe</th>
                                 <th class="px-5 py-4">Keterangan</th>
                                 <th class="px-5 py-4">Dibuat</th>
                                 <th class="px-5 py-4 text-right">Aksi</th>
@@ -47,6 +48,11 @@
                             @forelse ($categories as $category)
                                 <tr>
                                     <td class="px-5 py-4 font-semibold text-slate-900">{{ $category->name }}</td>
+                                    <td class="px-5 py-4">
+                                        <span class="inline-flex rounded-full px-3 py-1 text-xs font-bold {{ $category->type === 'video' ? 'bg-sky-100 text-sky-700' : 'bg-amber-100 text-amber-700' }}">
+                                            {{ $category->type === 'video' ? 'Video' : 'Artikel' }}
+                                        </span>
+                                    </td>
                                     <td class="px-5 py-4 text-slate-500">{{ $category->description ?: '-' }}</td>
                                     <td class="px-5 py-4 text-slate-500">{{ $category->created_at?->format('d M Y H:i') }}</td>
                                     <td class="px-5 py-4">
@@ -56,6 +62,7 @@
                                                 data-open-edit-modal
                                                 data-id="{{ $category->id }}"
                                                 data-name="{{ $category->name }}"
+                                                data-type="{{ $category->type }}"
                                                 data-description="{{ $category->description }}"
                                                 data-update-url="{{ route('categories.update', $category) }}"
                                                 class="rounded-xl border border-slate-200 px-3 py-2 text-xs font-bold text-slate-700 transition hover:bg-slate-50">
@@ -73,7 +80,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="4" class="px-5 py-8 text-center text-slate-500">Belum ada kategori.</td>
+                                    <td colspan="5" class="px-5 py-8 text-center text-slate-500">Belum ada kategori.</td>
                                 </tr>
                             @endforelse
                         </tbody>
@@ -102,6 +109,19 @@
                     <input name="name" type="text" value="{{ $formMode === 'create' ? old('name') : '' }}" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-amber-400 focus:outline-none">
                     @if ($formMode === 'create')
                         @error('name')
+                            <p class="mt-2 text-sm text-rose-500">{{ $message }}</p>
+                        @enderror
+                    @endif
+                </div>
+
+                <div>
+                    <label class="mb-2 block text-sm font-semibold text-slate-700">Tipe Kategori</label>
+                    <select name="type" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-900 focus:border-amber-400 focus:outline-none">
+                        <option value="artikel" @selected($formMode === 'create' && old('type', 'artikel') === 'artikel')>Kategori Artikel</option>
+                        <option value="video" @selected($formMode === 'create' && old('type') === 'video')>Kategori Video</option>
+                    </select>
+                    @if ($formMode === 'create')
+                        @error('type')
                             <p class="mt-2 text-sm text-rose-500">{{ $message }}</p>
                         @enderror
                     @endif
@@ -152,6 +172,19 @@
                     <input id="edit_name" name="name" type="text" value="{{ $formMode === 'edit' ? old('name', $editingCategory?->name) : '' }}" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-amber-400 focus:outline-none">
                     @if ($formMode === 'edit')
                         @error('name')
+                            <p class="mt-2 text-sm text-rose-500">{{ $message }}</p>
+                        @enderror
+                    @endif
+                </div>
+
+                <div>
+                    <label class="mb-2 block text-sm font-semibold text-slate-700">Tipe Kategori</label>
+                    <select id="edit_type" name="type" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-900 focus:border-amber-400 focus:outline-none">
+                        <option value="artikel" @selected($formMode === 'edit' && old('type', $editingCategory?->type) === 'artikel')>Kategori Artikel</option>
+                        <option value="video" @selected($formMode === 'edit' && old('type', $editingCategory?->type) === 'video')>Kategori Video</option>
+                    </select>
+                    @if ($formMode === 'edit')
+                        @error('type')
                             <p class="mt-2 text-sm text-rose-500">{{ $message }}</p>
                         @enderror
                     @endif
@@ -229,6 +262,7 @@
             button.addEventListener('click', () => {
                 document.getElementById('edit_category_id').value = button.dataset.id;
                 document.getElementById('edit_name').value = button.dataset.name;
+                document.getElementById('edit_type').value = button.dataset.type;
                 document.getElementById('edit_description').value = button.dataset.description;
                 editCategoryForm.action = button.dataset.updateUrl;
                 openModal('editCategoryModal');
@@ -254,7 +288,7 @@
         if (window.jQuery) {
             $('#categoriesTable').DataTable({
                 pageLength: 10,
-                order: [[2, 'desc']],
+                order: [[3, 'desc']],
                 language: {
                     search: 'Cari:',
                     lengthMenu: 'Tampilkan _MENU_ data',

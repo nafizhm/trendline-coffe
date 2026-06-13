@@ -77,64 +77,109 @@
   };
   $categoryCollection = \App\Models\Category::query()->orderBy('name')->get();
   $normalizeCategoryKey = fn (string $value) => str_replace([' ', '_'], '-', strtolower(trim($value)));
-  $resolveCategory = function (string $key, array $aliases = []) use ($categoryCollection, $normalizeCategoryKey) {
+  $resolveCategory = function (string $key, string $type, array $aliases = []) use ($categoryCollection, $normalizeCategoryKey) {
     $keys = collect(array_merge([$key], $aliases))
       ->map(fn (string $value) => $normalizeCategoryKey($value))
       ->all();
 
-    return $categoryCollection->first(function ($category) use ($keys, $normalizeCategoryKey) {
+    return $categoryCollection->first(function ($category) use ($keys, $type, $normalizeCategoryKey) {
       $normalizedName = $normalizeCategoryKey($category->name);
 
-      return in_array($normalizedName, $keys, true)
-        || (in_array('emas', $keys, true) && str_contains($normalizedName, 'emas'));
+      return $category->type === $type
+        && (
+          in_array($normalizedName, $keys, true)
+          || (in_array('emas', $keys, true) && str_contains($normalizedName, 'emas'))
+        );
     });
   };
-  $articleEducationTabs = collect([
-    'forex' => ['label' => 'Forex'],
-    'saham' => ['label' => 'Saham'],
-    'emas' => ['label' => 'Emas'],
-  ])->map(function (array $tab, string $key) use ($resolveCategory) {
-    $category = $resolveCategory($key);
+  $articleEducationTabs = $categoryCollection
+    ->where('type', \App\Models\Category::TYPE_ARTICLE)
+    ->values()
+    ->mapWithKeys(function ($category) use ($normalizeCategoryKey) {
+      $key = $normalizeCategoryKey($category->name);
 
-    return [
-      'label' => $tab['label'],
-      'category' => $category,
-      'articles' => $category
-        ? \App\Models\Article::query()
-            ->with('category')
-            ->where('status', 'publish')
-            ->where('category_id', $category->id)
-            ->orderByDesc('published_at')
-            ->latest('id')
-            ->take(3)
-            ->get()
-        : collect(),
-    ];
-  });
-  $videoEducationTabs = collect([
-    'forex' => ['label' => 'Forex', 'aliases' => []],
-    'saham' => ['label' => 'Saham', 'aliases' => []],
-    'video-panduan' => ['label' => 'Video Panduan', 'aliases' => ['video panduan', 'panduan']],
-    'analisa' => ['label' => 'Analisa', 'aliases' => ['analisis']],
-    'teknical' => ['label' => 'Teknical', 'aliases' => ['technical', 'teknikal']],
-  ])->map(function (array $tab, string $key) use ($resolveCategory) {
-    $category = $resolveCategory($key, $tab['aliases']);
+      return [$key => [
+        'label' => $category->name,
+        'category' => $category,
+        'articles' => \App\Models\Article::query()
+          ->with('category')
+          ->where('status', 'publish')
+          ->where('category_id', $category->id)
+          ->orderByDesc('published_at')
+          ->latest('id')
+          ->take(3)
+          ->get(),
+      ]];
+    });
+  $videoEducationTabs = $categoryCollection
+    ->where('type', \App\Models\Category::TYPE_VIDEO)
+    ->values()
+    ->mapWithKeys(function ($category) use ($normalizeCategoryKey) {
+      $key = $normalizeCategoryKey($category->name);
 
-    return [
-      'label' => $tab['label'],
-      'category' => $category,
-      'videos' => $category
-        ? \App\Models\Video::query()
-            ->with('category')
-            ->where('status', 'publish')
-            ->where('category_id', $category->id)
-            ->orderByDesc('published_at')
-            ->latest('id')
-            ->take(3)
-            ->get()
-        : collect(),
-    ];
-  });
+      return [$key => [
+        'label' => $category->name,
+        'category' => $category,
+        'videos' => \App\Models\Video::query()
+          ->with('category')
+          ->where('status', 'publish')
+          ->where('category_id', $category->id)
+          ->orderByDesc('published_at')
+          ->latest('id')
+          ->take(3)
+          ->get(),
+      ]];
+    });
+  if ($articleEducationTabs->isEmpty()) {
+    $articleEducationTabs = collect([
+      'forex' => ['label' => 'Forex'],
+      'saham' => ['label' => 'Saham'],
+      'emas' => ['label' => 'Emas'],
+    ])->map(function (array $tab, string $key) use ($resolveCategory) {
+      $category = $resolveCategory($key, \App\Models\Category::TYPE_ARTICLE);
+
+      return [
+        'label' => $tab['label'],
+        'category' => $category,
+        'articles' => $category
+          ? \App\Models\Article::query()
+              ->with('category')
+              ->where('status', 'publish')
+              ->where('category_id', $category->id)
+              ->orderByDesc('published_at')
+              ->latest('id')
+              ->take(3)
+              ->get()
+          : collect(),
+      ];
+    });
+  }
+  if ($videoEducationTabs->isEmpty()) {
+    $videoEducationTabs = collect([
+      'forex' => ['label' => 'Forex', 'aliases' => []],
+      'saham' => ['label' => 'Saham', 'aliases' => []],
+      'video-panduan' => ['label' => 'Video Panduan', 'aliases' => ['video panduan', 'panduan']],
+      'analisa' => ['label' => 'Analisa', 'aliases' => ['analisis']],
+      'teknical' => ['label' => 'Teknical', 'aliases' => ['technical', 'teknikal']],
+    ])->map(function (array $tab, string $key) use ($resolveCategory) {
+      $category = $resolveCategory($key, \App\Models\Category::TYPE_VIDEO, $tab['aliases']);
+
+      return [
+        'label' => $tab['label'],
+        'category' => $category,
+        'videos' => $category
+          ? \App\Models\Video::query()
+              ->with('category')
+              ->where('status', 'publish')
+              ->where('category_id', $category->id)
+              ->orderByDesc('published_at')
+              ->latest('id')
+              ->take(3)
+              ->get()
+          : collect(),
+      ];
+    });
+  }
 @endphp
 <title>{{ $appName }} - Coffee & Trading Hub</title>
 <script src="https://cdn.tailwindcss.com"></script>
@@ -1010,7 +1055,7 @@ document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
 // Article education tabs
 function showArticleEdu(type) {
-  ['forex','saham','emas'].forEach(t => {
+  @json($articleEducationTabs->keys()->values()).forEach(t => {
     document.getElementById('article-edu-' + t).classList.add('hidden');
     const btn = document.getElementById('article-tab-' + t);
     btn.className = 'top-tab text-xs';
@@ -1024,7 +1069,7 @@ function showArticleEdu(type) {
 
 // Video education tabs
 function showVideoEdu(type) {
-  ['forex','saham','video-panduan','analisa','teknical'].forEach(t => {
+  @json($videoEducationTabs->keys()->values()).forEach(t => {
     document.getElementById('video-edu-' + t).classList.add('hidden');
     const btn = document.getElementById('video-tab-' + t);
     btn.className = 'top-tab text-xs';

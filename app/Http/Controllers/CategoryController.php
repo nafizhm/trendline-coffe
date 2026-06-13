@@ -20,9 +20,12 @@ class CategoryController extends Controller
     {
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
+            'type' => ['required', 'in:artikel,video'],
             'description' => ['nullable', 'string'],
         ], [
             'name.required' => 'Nama kategori wajib diisi.',
+            'type.required' => 'Tipe kategori wajib dipilih.',
+            'type.in' => 'Tipe kategori harus artikel atau video.',
         ]);
 
         Category::create($data);
@@ -34,9 +37,12 @@ class CategoryController extends Controller
     {
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
+            'type' => ['required', 'in:artikel,video'],
             'description' => ['nullable', 'string'],
         ], [
             'name.required' => 'Nama kategori wajib diisi.',
+            'type.required' => 'Tipe kategori wajib dipilih.',
+            'type.in' => 'Tipe kategori harus artikel atau video.',
         ]);
 
         $category->update($data);

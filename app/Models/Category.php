@@ -7,8 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 
 #[Fillable([
     'name',
+    'type',
     'description',
 ])]
 class Category extends Model
 {
+    public const TYPE_ARTICLE = 'artikel';
+    public const TYPE_VIDEO = 'video';
 }
