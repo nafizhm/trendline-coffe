@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     'attachment_path',
     'status',
     'admin_name',
+    'sort_order',
 ])]
 class Article extends Model
 {
@@ -21,6 +22,7 @@ class Article extends Model
     {
         return [
             'published_at' => 'date',
+            'sort_order' => 'integer',
         ];
     }
 

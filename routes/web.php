@@ -42,6 +42,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('/categories', CategoryController::class)
         ->parameters(['categories' => 'category'])
         ->except(['show', 'create', 'edit']);
+    Route::put('/articles/{article}/move-up', [ArticleController::class, 'moveUp'])->name('articles.move-up');
+    Route::put('/articles/{article}/move-down', [ArticleController::class, 'moveDown'])->name('articles.move-down');
     Route::resource('/articles', ArticleController::class)
         ->parameters(['articles' => 'article'])
         ->except(['show']);
@@ -50,6 +52,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/contents', [ContentController::class, 'store'])->name('contents.store');
     Route::get('/contents/{content}/edit', [ContentController::class, 'edit'])->name('contents.edit');
     Route::put('/contents/{content}', [ContentController::class, 'update'])->name('contents.update');
+    Route::put('/videos/{video}/move-up', [VideoController::class, 'moveUp'])->name('videos.move-up');
+    Route::put('/videos/{video}/move-down', [VideoController::class, 'moveDown'])->name('videos.move-down');
     Route::resource('/videos', VideoController::class)
         ->parameters(['videos' => 'video'])
         ->except(['show', 'create', 'edit']);

@@ -2,6 +2,7 @@
     $articleModel = $article ?? null;
     $defaultAdminName = old('admin_name', $articleModel?->admin_name ?? auth()->user()?->name ?? '');
     $defaultPublishedDate = old('published_at', optional($articleModel?->published_at)->format('Y-m-d') ?? now()->format('Y-m-d'));
+    $defaultSortOrder = old('sort_order', $articleModel?->sort_order ?? 10);
 @endphp
 
 <div class="grid gap-5 md:grid-cols-2">
@@ -52,6 +53,15 @@
         <label for="admin_name" class="mb-2 block text-sm font-semibold text-slate-700">Nama Admin</label>
         <input id="admin_name" name="admin_name" type="text" value="{{ $defaultAdminName }}" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-900 focus:border-amber-400 focus:outline-none">
         @error('admin_name')
+            <p class="mt-2 text-sm text-rose-500">{{ $message }}</p>
+        @enderror
+    </div>
+
+    <div class="md:col-span-2">
+        <label for="sort_order" class="mb-2 block text-sm font-semibold text-slate-700">Urutan Tampil</label>
+        <input id="sort_order" name="sort_order" type="number" min="0" step="1" value="{{ $defaultSortOrder }}" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-900 focus:border-amber-400 focus:outline-none">
+        <p class="mt-2 text-xs text-slate-500">Angka lebih kecil akan tampil lebih atas. Bisa juga diatur cepat dari tombol naik/turun pada tabel.</p>
+        @error('sort_order')
             <p class="mt-2 text-sm text-rose-500">{{ $message }}</p>
         @enderror
     </div>

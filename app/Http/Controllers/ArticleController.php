@@ -23,8 +23,9 @@ class ArticleController extends Controller
             ->with('category')
             ->where('status', 'publish')
             ->when($category, fn ($query) => $query->where('category_id', $category->id))
+            ->orderBy('sort_order')
             ->orderByDesc('published_at')
-            ->latest('id')
+            ->orderByDesc('id')
             ->get();
 
         return view('public.articles.index', [
@@ -66,7 +67,10 @@ class ArticleController extends Controller
         return view('articles.index', [
             'articles' => Article::query()
                 ->with('category')
-                ->latest()
+                ->orderBy('category_id')
+                ->orderBy('sort_order')
+                ->orderByDesc('published_at')
+                ->orderByDesc('id')
                 ->get(),
         ]);
     }
@@ -121,6 +125,36 @@ class ArticleController extends Controller
         return redirect()->route('articles.index')->with('status', 'Artikel edukasi berhasil dihapus.');
     }
 
+    public function moveUp(Article $article): RedirectResponse
+    {
+        $orderedArticles = $this->orderedArticlesForCategory($article->category_id);
+        $currentIndex = $orderedArticles->search(fn (Article $orderedArticle) => $orderedArticle->id === $article->id);
+        $previousArticle = $currentIndex !== false && $currentIndex > 0
+            ? $orderedArticles->get($currentIndex - 1)
+            : null;
+
+        if ($previousArticle) {
+            $this->swapArticleOrder($article, $previousArticle);
+        }
+
+        return redirect()->route('articles.index')->with('status', 'Urutan artikel edukasi berhasil diperbarui.');
+    }
+
+    public function moveDown(Article $article): RedirectResponse
+    {
+        $orderedArticles = $this->orderedArticlesForCategory($article->category_id);
+        $currentIndex = $orderedArticles->search(fn (Article $orderedArticle) => $orderedArticle->id === $article->id);
+        $nextArticle = $currentIndex !== false && $currentIndex < $orderedArticles->count() - 1
+            ? $orderedArticles->get($currentIndex + 1)
+            : null;
+
+        if ($nextArticle) {
+            $this->swapArticleOrder($article, $nextArticle);
+        }
+
+        return redirect()->route('articles.index')->with('status', 'Urutan artikel edukasi berhasil diperbarui.');
+    }
+
     private function validateArticle(Request $request): array
     {
         return $request->validate([
@@ -131,6 +165,7 @@ class ArticleController extends Controller
             'attachment' => ['nullable', 'file'],
             'status' => ['required', 'in:publish,arsip'],
             'admin_name' => ['required', 'string', 'max:255'],
+            'sort_order' => ['required', 'integer', 'min:0'],
         ], [
             'published_at.required' => 'Tanggal wajib diisi.',
             'title.required' => 'Judul artikel edukasi wajib diisi.',
@@ -140,6 +175,9 @@ class ArticleController extends Controller
             'status.required' => 'Status wajib dipilih.',
             'status.in' => 'Status harus publish atau arsip.',
             'admin_name.required' => 'Nama admin wajib diisi.',
+            'sort_order.required' => 'Urutan wajib diisi.',
+            'sort_order.integer' => 'Urutan harus berupa angka.',
+            'sort_order.min' => 'Urutan minimal 0.',
         ]);
     }
 
@@ -186,5 +224,24 @@ class ArticleController extends Controller
         return Category::query()
             ->where('type', Category::TYPE_ARTICLE)
             ->orderBy('name');
+    }
+
+    private function swapArticleOrder(Article $firstArticle, Article $secondArticle): void
+    {
+        $firstOrder = $firstArticle->sort_order;
+
+        $firstArticle->update(['sort_order' => $secondArticle->sort_order]);
+        $secondArticle->update(['sort_order' => $firstOrder]);
+    }
+
+    private function orderedArticlesForCategory(int $categoryId)
+    {
+        return Article::query()
+            ->where('category_id', $categoryId)
+            ->orderBy('sort_order')
+            ->orderByDesc('published_at')
+            ->orderByDesc('id')
+            ->get()
+            ->values();
     }
 }

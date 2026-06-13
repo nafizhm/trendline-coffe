@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     'youtube_code',
     'status',
     'admin_name',
+    'sort_order',
 ])]
 class Video extends Model
 {
@@ -20,6 +21,7 @@ class Video extends Model
     {
         return [
             'published_at' => 'date',
+            'sort_order' => 'integer',
         ];
     }
 

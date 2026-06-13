@@ -27,6 +27,7 @@
                         <thead class="bg-slate-50">
                             <tr class="text-left text-xs uppercase tracking-[0.22em] text-slate-500">
                                 <th class="px-5 py-4">Tanggal</th>
+                                <th class="px-5 py-4">Urutan</th>
                                 <th class="px-5 py-4">Judul Artikel Edukasi</th>
                                 <th class="px-5 py-4">Kategori</th>
                                 <th class="px-5 py-4">Status</th>
@@ -38,6 +39,27 @@
                             @forelse ($articles as $article)
                                 <tr>
                                     <td class="px-5 py-4 text-slate-500">{{ $article->published_at?->format('d M Y') }}</td>
+                                    <td class="px-5 py-4">
+                                        <div class="flex items-center gap-2">
+                                            <span class="min-w-8 font-bold text-amber-700">{{ $article->sort_order }}</span>
+                                            <div class="flex items-center gap-1">
+                                                <form action="{{ route('articles.move-up', $article) }}" method="POST">
+                                                    @csrf
+                                                    @method('PUT')
+                                                    <button type="submit" title="Naikkan urutan" class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900">
+                                                        <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/></svg>
+                                                    </button>
+                                                </form>
+                                                <form action="{{ route('articles.move-down', $article) }}" method="POST">
+                                                    @csrf
+                                                    @method('PUT')
+                                                    <button type="submit" title="Turunkan urutan" class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900">
+                                                        <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </td>
                                     <td class="px-5 py-4 font-semibold text-slate-900">{{ $article->title }}</td>
                                     <td class="px-5 py-4 text-slate-500">{{ $article->category?->name ?? '-' }}</td>
                                     <td class="px-5 py-4">
@@ -63,7 +85,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="6" class="px-5 py-8 text-center text-slate-500">Belum ada artikel edukasi.</td>
+                                    <td colspan="7" class="px-5 py-8 text-center text-slate-500">Belum ada artikel edukasi.</td>
                                 </tr>
                             @endforelse
                         </tbody>
@@ -80,7 +102,7 @@
         if (window.jQuery) {
             $('#articlesTable').DataTable({
                 pageLength: 10,
-                order: [[0, 'desc']],
+                order: [[1, 'asc']],
                 language: {
                     search: 'Cari:',
                     lengthMenu: 'Tampilkan _MENU_ data',

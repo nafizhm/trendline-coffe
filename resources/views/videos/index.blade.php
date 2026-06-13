@@ -40,6 +40,7 @@
                             <tr class="text-left text-xs uppercase tracking-[0.22em] text-slate-500">
                                 <th class="px-5 py-4">Thumbnail</th>
                                 <th class="px-5 py-4">Tanggal</th>
+                                <th class="px-5 py-4">Urutan</th>
                                 <th class="px-5 py-4">Judul Video Edukasi</th>
                                 <th class="px-5 py-4">Kategori</th>
                                 <th class="px-5 py-4">Kode Youtube</th>
@@ -57,6 +58,27 @@
                                         </a>
                                     </td>
                                     <td class="px-5 py-4 text-slate-500">{{ $video->published_at?->format('d M Y') }}</td>
+                                    <td class="px-5 py-4">
+                                        <div class="flex items-center gap-2">
+                                            <span class="min-w-8 font-bold text-amber-700">{{ $video->sort_order }}</span>
+                                            <div class="flex items-center gap-1">
+                                                <form action="{{ route('videos.move-up', $video) }}" method="POST">
+                                                    @csrf
+                                                    @method('PUT')
+                                                    <button type="submit" title="Naikkan urutan" class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900">
+                                                        <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/></svg>
+                                                    </button>
+                                                </form>
+                                                <form action="{{ route('videos.move-down', $video) }}" method="POST">
+                                                    @csrf
+                                                    @method('PUT')
+                                                    <button type="submit" title="Turunkan urutan" class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900">
+                                                        <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </td>
                                     <td class="px-5 py-4 font-semibold text-slate-900">{{ $video->title }}</td>
                                     <td class="px-5 py-4 text-slate-500">{{ $video->category?->name ?? '-' }}</td>
                                     <td class="px-5 py-4 font-semibold text-amber-700">{{ $video->youtube_code }}</td>
@@ -78,6 +100,7 @@
                                                 data-youtube-code="{{ $video->youtube_code }}"
                                                 data-status="{{ $video->status }}"
                                                 data-admin-name="{{ $video->admin_name }}"
+                                                data-sort-order="{{ $video->sort_order }}"
                                                 data-update-url="{{ route('videos.update', $video) }}"
                                                 class="rounded-xl border border-slate-200 px-3 py-2 text-xs font-bold text-slate-700 transition hover:bg-slate-50">
                                                 Edit
@@ -94,7 +117,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="8" class="px-5 py-8 text-center text-slate-500">Belum ada video edukasi.</td>
+                                    <td colspan="9" class="px-5 py-8 text-center text-slate-500">Belum ada video edukasi.</td>
                                 </tr>
                             @endforelse
                         </tbody>
@@ -185,6 +208,17 @@
                     <input name="admin_name" type="text" value="{{ $formMode === 'create' ? old('admin_name', $defaultAdminName) : $defaultAdminName }}" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-900 focus:border-amber-400 focus:outline-none">
                     @if ($formMode === 'create')
                         @error('admin_name')
+                            <p class="mt-2 text-sm text-rose-500">{{ $message }}</p>
+                        @enderror
+                    @endif
+                </div>
+
+                <div>
+                    <label class="mb-2 block text-sm font-semibold text-slate-700">Urutan Tampil</label>
+                    <input name="sort_order" type="number" min="0" step="1" value="{{ $formMode === 'create' ? old('sort_order', 10) : 10 }}" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-900 focus:border-amber-400 focus:outline-none">
+                    <p class="mt-2 text-xs text-slate-400">Angka lebih kecil akan tampil lebih atas.</p>
+                    @if ($formMode === 'create')
+                        @error('sort_order')
                             <p class="mt-2 text-sm text-rose-500">{{ $message }}</p>
                         @enderror
                     @endif
@@ -292,6 +326,17 @@
                     @endif
                 </div>
 
+                <div>
+                    <label class="mb-2 block text-sm font-semibold text-slate-700">Urutan Tampil</label>
+                    <input id="edit_sort_order" name="sort_order" type="number" min="0" step="1" value="{{ $formMode === 'edit' ? old('sort_order', $editingVideo?->sort_order) : '' }}" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-900 focus:border-amber-400 focus:outline-none">
+                    <p class="mt-2 text-xs text-slate-400">Angka lebih kecil akan tampil lebih atas.</p>
+                    @if ($formMode === 'edit')
+                        @error('sort_order')
+                            <p class="mt-2 text-sm text-rose-500">{{ $message }}</p>
+                        @enderror
+                    @endif
+                </div>
+
                 <div class="flex justify-end gap-3 pt-2">
                     <button type="button" data-close-modal="editVideoModal" class="rounded-2xl border border-slate-200 px-5 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">Batal</button>
                     <button type="submit" class="inline-flex items-center justify-center rounded-2xl bg-slate-900 px-5 py-3 text-sm font-bold text-white transition hover:bg-slate-800" data-submit-button>
@@ -359,6 +404,7 @@
                 document.getElementById('edit_youtube_code').value = button.dataset.youtubeCode;
                 document.getElementById('edit_status').value = button.dataset.status;
                 document.getElementById('edit_admin_name').value = button.dataset.adminName;
+                document.getElementById('edit_sort_order').value = button.dataset.sortOrder;
                 editVideoForm.action = button.dataset.updateUrl;
                 openModal('editVideoModal');
             });
@@ -383,7 +429,7 @@
         if (window.jQuery) {
             $('#videosTable').DataTable({
                 pageLength: 10,
-                order: [[1, 'desc']],
+                order: [[2, 'asc']],
                 language: {
                     search: 'Cari:',
                     lengthMenu: 'Tampilkan _MENU_ data',

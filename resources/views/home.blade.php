@@ -105,9 +105,10 @@
           ->with('category')
           ->where('status', 'publish')
           ->where('category_id', $category->id)
+          ->orderBy('sort_order')
           ->orderByDesc('published_at')
-          ->latest('id')
-          ->take(3)
+          ->orderByDesc('id')
+          ->take(2)
           ->get(),
       ]];
     });
@@ -124,9 +125,10 @@
           ->with('category')
           ->where('status', 'publish')
           ->where('category_id', $category->id)
+          ->orderBy('sort_order')
           ->orderByDesc('published_at')
-          ->latest('id')
-          ->take(3)
+          ->orderByDesc('id')
+          ->take(2)
           ->get(),
       ]];
     });
