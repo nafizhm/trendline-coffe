@@ -14,9 +14,9 @@
         <section class="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm">
             <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                 <div>
-                    <p class="text-sm font-semibold uppercase tracking-[0.24em] text-amber-700">Video</p>
-                    <h2 class="mt-2 text-3xl font-black text-slate-900">Kelola Video Youtube</h2>
-                    <p class="mt-3 text-sm leading-7 text-slate-600">Menu ini menyimpan video dari Youtube dengan input kode video saja, lalu thumbnail otomatis tampil di tabel.</p>
+                    <p class="text-sm font-semibold uppercase tracking-[0.24em] text-amber-700">Video Edukasi</p>
+                    <h2 class="mt-2 text-3xl font-black text-slate-900">Kelola Video Edukasi</h2>
+                    <p class="mt-3 text-sm leading-7 text-slate-600">Kelola materi edukasi berbentuk video Youtube dengan input kode video saja, lalu thumbnail otomatis tampil di tabel.</p>
                 </div>
                 <div class="flex items-center gap-3">
                     <div class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-semibold text-slate-700">
@@ -26,7 +26,7 @@
                         type="button"
                         data-open-modal="createVideoModal"
                         class="rounded-2xl bg-slate-900 px-4 py-3 text-sm font-bold text-white transition hover:bg-slate-800">
-                        Tambah Video
+                        Tambah Video Edukasi
                     </button>
                 </div>
             </div>
@@ -40,7 +40,7 @@
                             <tr class="text-left text-xs uppercase tracking-[0.22em] text-slate-500">
                                 <th class="px-5 py-4">Thumbnail</th>
                                 <th class="px-5 py-4">Tanggal</th>
-                                <th class="px-5 py-4">Judul Video</th>
+                                <th class="px-5 py-4">Judul Video Edukasi</th>
                                 <th class="px-5 py-4">Kategori</th>
                                 <th class="px-5 py-4">Kode Youtube</th>
                                 <th class="px-5 py-4">Status</th>
@@ -94,7 +94,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="8" class="px-5 py-8 text-center text-slate-500">Belum ada video.</td>
+                                    <td colspan="8" class="px-5 py-8 text-center text-slate-500">Belum ada video edukasi.</td>
                                 </tr>
                             @endforelse
                         </tbody>
@@ -108,8 +108,8 @@
         <div class="w-full max-w-3xl rounded-[28px] bg-white shadow-2xl">
             <div class="flex items-center justify-between border-b border-slate-200 px-6 py-5">
                 <div>
-                    <p class="text-sm font-semibold uppercase tracking-[0.24em] text-amber-700">Video</p>
-                    <h3 class="mt-1 text-2xl font-black text-slate-900">Tambah Video</h3>
+                    <p class="text-sm font-semibold uppercase tracking-[0.24em] text-amber-700">Video Edukasi</p>
+                    <h3 class="mt-1 text-2xl font-black text-slate-900">Tambah Video Edukasi</h3>
                 </div>
                 <button type="button" data-close-modal="createVideoModal" class="rounded-xl border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-600">Tutup</button>
             </div>
@@ -144,7 +144,7 @@
                 </div>
 
                 <div>
-                    <label class="mb-2 block text-sm font-semibold text-slate-700">Judul Video</label>
+                    <label class="mb-2 block text-sm font-semibold text-slate-700">Judul Video Edukasi</label>
                     <input name="title" type="text" value="{{ $formMode === 'create' ? old('title') : '' }}" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-900 focus:border-amber-400 focus:outline-none">
                     @if ($formMode === 'create')
                         @error('title')
@@ -208,8 +208,8 @@
         <div class="w-full max-w-3xl rounded-[28px] bg-white shadow-2xl">
             <div class="flex items-center justify-between border-b border-slate-200 px-6 py-5">
                 <div>
-                    <p class="text-sm font-semibold uppercase tracking-[0.24em] text-amber-700">Video</p>
-                    <h3 class="mt-1 text-2xl font-black text-slate-900">Edit Video</h3>
+                    <p class="text-sm font-semibold uppercase tracking-[0.24em] text-amber-700">Video Edukasi</p>
+                    <h3 class="mt-1 text-2xl font-black text-slate-900">Edit Video Edukasi</h3>
                 </div>
                 <button type="button" data-close-modal="editVideoModal" class="rounded-xl border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-600">Tutup</button>
             </div>
@@ -246,7 +246,7 @@
                 </div>
 
                 <div>
-                    <label class="mb-2 block text-sm font-semibold text-slate-700">Judul Video</label>
+                    <label class="mb-2 block text-sm font-semibold text-slate-700">Judul Video Edukasi</label>
                     <input id="edit_title" name="title" type="text" value="{{ $formMode === 'edit' ? old('title', $editingVideo?->title) : '' }}" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-900 focus:border-amber-400 focus:outline-none">
                     @if ($formMode === 'edit')
                         @error('title')

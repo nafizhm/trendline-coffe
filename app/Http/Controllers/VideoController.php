@@ -12,7 +12,7 @@ class VideoController extends Controller
 {
     public function publicIndex(Request $request): View
     {
-        $categoryKey = strtolower((string) $request->query('category'));
+        $categoryKey = $this->normalizeCategoryKey((string) $request->query('category'));
         $category = $this->resolvePublicCategory($categoryKey);
 
         $videos = Video::query()
@@ -47,7 +47,7 @@ class VideoController extends Controller
 
         Video::create($data);
 
-        return redirect()->route('videos.index')->with('status', 'Video berhasil ditambahkan.');
+        return redirect()->route('videos.index')->with('status', 'Video edukasi berhasil ditambahkan.');
     }
 
     public function update(Request $request, Video $video): RedirectResponse
@@ -56,14 +56,14 @@ class VideoController extends Controller
 
         $video->update($data);
 
-        return redirect()->route('videos.index')->with('status', 'Video berhasil diperbarui.');
+        return redirect()->route('videos.index')->with('status', 'Video edukasi berhasil diperbarui.');
     }
 
     public function destroy(Video $video): RedirectResponse
     {
         $video->delete();
 
-        return redirect()->route('videos.index')->with('status', 'Video berhasil dihapus.');
+        return redirect()->route('videos.index')->with('status', 'Video edukasi berhasil dihapus.');
     }
 
     private function validateVideo(Request $request): array
@@ -77,7 +77,7 @@ class VideoController extends Controller
             'admin_name' => ['required', 'string', 'max:255'],
         ], [
             'published_at.required' => 'Tanggal wajib diisi.',
-            'title.required' => 'Judul video wajib diisi.',
+            'title.required' => 'Judul video edukasi wajib diisi.',
             'category_id.required' => 'Kategori wajib dipilih.',
             'category_id.exists' => 'Kategori tidak valid.',
             'youtube_code.required' => 'Kode Youtube wajib diisi.',
@@ -94,13 +94,26 @@ class VideoController extends Controller
             return null;
         }
 
+        $normalizedKey = $this->normalizeCategoryKey($categoryKey);
+        $aliases = [
+            'video-panduan' => ['panduan'],
+            'analisa' => ['analisis'],
+            'teknical' => ['technical', 'teknikal'],
+        ][$normalizedKey] ?? [];
+        $keys = array_merge([$normalizedKey], $aliases);
+
         return Category::query()
             ->get()
-            ->first(function (Category $category) use ($categoryKey) {
-                $normalizedName = strtolower($category->name);
+            ->first(function (Category $category) use ($keys) {
+                $normalizedName = $this->normalizeCategoryKey($category->name);
 
-                return $normalizedName === $categoryKey
-                    || ($categoryKey === 'emas' && str_contains($normalizedName, 'emas'));
+                return in_array($normalizedName, $keys, true)
+                    || (in_array('emas', $keys, true) && str_contains($normalizedName, 'emas'));
             });
+    }
+
+    private function normalizeCategoryKey(string $value): string
+    {
+        return str_replace([' ', '_'], '-', strtolower(trim($value)));
     }
 }

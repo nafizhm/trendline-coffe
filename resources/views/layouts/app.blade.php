@@ -98,13 +98,13 @@
                             <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-slate-700">
                                 <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 5.25A2.25 2.25 0 018.25 3h8.129a2.25 2.25 0 011.591.659l1.371 1.371A2.25 2.25 0 0120 6.621V18.75A2.25 2.25 0 0117.75 21h-9.5A2.25 2.25 0 016 18.75V5.25z"/><path stroke-linecap="round" stroke-linejoin="round" d="M9 8.25h6M9 12h6M9 15.75h4.5"/></svg>
                             </span>
-                            <span class="sidebar-label">Artikel</span>
+                            <span class="sidebar-label">Artikel Edukasi</span>
                         </a>
                         <a href="{{ route('videos.index') }}" class="sidebar-link {{ request()->routeIs('videos.*') ? 'active' : '' }} flex items-center gap-2.5 rounded-xl border border-transparent px-3 py-2.5 text-sm font-semibold text-slate-600">
                             <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-slate-700">
                                 <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6.75a2.25 2.25 0 00-2.25-2.25h-6A2.25 2.25 0 005.25 6.75v10.5A2.25 2.25 0 007.5 19.5h6a2.25 2.25 0 002.25-2.25V13.5l3.75 2.25v-7.5l-3.75 2.25z"/></svg>
                             </span>
-                            <span class="sidebar-label">Video</span>
+                            <span class="sidebar-label">Video Edukasi</span>
                         </a>
                         <a href="{{ route('referral-links.index') }}" class="sidebar-link {{ request()->routeIs('referral-links.*') ? 'active' : '' }} flex items-center gap-2.5 rounded-xl border border-transparent px-3 py-2.5 text-sm font-semibold text-slate-600">
                             <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-slate-700">

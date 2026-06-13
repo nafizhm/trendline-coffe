@@ -26,7 +26,7 @@
     </div>
 
     <div class="md:col-span-2">
-        <label for="title" class="mb-2 block text-sm font-semibold text-slate-700">Judul Artikel</label>
+        <label for="title" class="mb-2 block text-sm font-semibold text-slate-700">Judul Artikel Edukasi</label>
         <input id="title" name="title" type="text" value="{{ old('title', $articleModel?->title) }}" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-900 focus:border-amber-400 focus:outline-none">
         @error('title')
             <p class="mt-2 text-sm text-rose-500">{{ $message }}</p>
@@ -57,7 +57,7 @@
     </div>
 
     <div class="md:col-span-2">
-        <label for="content" class="mb-2 block text-sm font-semibold text-slate-700">Isi Artikel</label>
+        <label for="content" class="mb-2 block text-sm font-semibold text-slate-700">Isi Artikel Edukasi</label>
         <textarea id="content" name="content" rows="16" class="js-summernote w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-900 focus:border-amber-400 focus:outline-none">{{ old('content', $articleModel?->content) }}</textarea>
         @error('content')
             <p class="mt-2 text-sm text-rose-500">{{ $message }}</p>
@@ -65,7 +65,7 @@
     </div>
 
     <div class="md:col-span-2">
-        <label for="attachment" class="mb-2 block text-sm font-semibold text-slate-700">Upload File Artikel</label>
+        <label for="attachment" class="mb-2 block text-sm font-semibold text-slate-700">Upload File Artikel Edukasi</label>
         @if ($articleModel?->attachment_path)
             <div class="mb-3">
                 <a href="{{ route('public.articles.files.show', $articleModel) }}" target="_blank" rel="noreferrer" class="inline-flex rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">

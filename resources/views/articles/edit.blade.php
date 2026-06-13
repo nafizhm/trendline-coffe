@@ -5,9 +5,9 @@
         <section class="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm">
             <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                 <div>
-                    <p class="text-sm font-semibold uppercase tracking-[0.24em] text-amber-700">Artikel</p>
-                    <h2 class="mt-2 text-3xl font-black text-slate-900">Edit Artikel</h2>
-                    <p class="mt-3 text-sm leading-7 text-slate-600">Perbarui konten artikel di halaman ini tanpa modal agar area editor lebih luas dan nyaman dipakai.</p>
+                    <p class="text-sm font-semibold uppercase tracking-[0.24em] text-amber-700">Artikel Edukasi</p>
+                    <h2 class="mt-2 text-3xl font-black text-slate-900">Edit Artikel Edukasi</h2>
+                    <p class="mt-3 text-sm leading-7 text-slate-600">Perbarui konten artikel edukasi di halaman ini tanpa modal agar area editor lebih luas dan nyaman dipakai.</p>
                 </div>
                 <a href="{{ route('articles.index') }}" class="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-bold text-slate-700 transition hover:bg-slate-50">
                     Kembali

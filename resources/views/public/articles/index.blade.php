@@ -20,9 +20,14 @@
             </div>
 
             <div class="mt-6 flex flex-wrap gap-3">
+                <a href="{{ route('public.articles.index') }}" class="rounded-full px-4 py-2 text-sm font-bold transition bg-[linear-gradient(135deg,#c9a84c,#f0c060)] text-[#0a1628]">Artikel Edukasi</a>
+                <a href="{{ route('public.videos.index') }}" class="rounded-full border border-[rgba(201,168,76,0.3)] px-4 py-2 text-sm font-bold text-white/75 transition hover:bg-white/5">Video Edukasi</a>
+            </div>
+
+            <div class="mt-5 flex flex-wrap gap-3">
                 <a href="{{ route('public.articles.index') }}" class="rounded-full px-4 py-2 text-sm font-bold transition {{ blank($activeCategoryKey) ? 'bg-[linear-gradient(135deg,#c9a84c,#f0c060)] text-[#0a1628]' : 'border border-[rgba(201,168,76,0.3)] text-white/75 hover:bg-white/5' }}">Semua</a>
                 @foreach ($categories as $category)
-                    @php($categoryKey = strtolower($category->name))
+                    @php($categoryKey = str_replace([' ', '_'], '-', strtolower(trim($category->name))))
                     <a href="{{ route('public.articles.index', ['category' => $categoryKey]) }}" class="rounded-full px-4 py-2 text-sm font-bold transition {{ $activeCategoryKey === $categoryKey ? 'bg-[linear-gradient(135deg,#c9a84c,#f0c060)] text-[#0a1628]' : 'border border-[rgba(201,168,76,0.3)] text-white/75 hover:bg-white/5' }}">{{ $category->name }}</a>
                 @endforeach
             </div>

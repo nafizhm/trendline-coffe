@@ -15,7 +15,7 @@ class ArticleController extends Controller
 {
     public function publicIndex(Request $request): View
     {
-        $categoryKey = strtolower((string) $request->query('category'));
+        $categoryKey = $this->normalizeCategoryKey((string) $request->query('category'));
         $category = $this->resolvePublicCategory($categoryKey);
 
         $articles = Article::query()
@@ -87,7 +87,7 @@ class ArticleController extends Controller
 
         Article::create($data);
 
-        return redirect()->route('articles.index')->with('status', 'Artikel berhasil ditambahkan.');
+        return redirect()->route('articles.index')->with('status', 'Artikel edukasi berhasil ditambahkan.');
     }
 
     public function edit(Article $article): View
@@ -109,7 +109,7 @@ class ArticleController extends Controller
 
         $article->update($data);
 
-        return redirect()->route('articles.index')->with('status', 'Artikel berhasil diperbarui.');
+        return redirect()->route('articles.index')->with('status', 'Artikel edukasi berhasil diperbarui.');
     }
 
     public function destroy(Article $article): RedirectResponse
@@ -117,7 +117,7 @@ class ArticleController extends Controller
         $this->deleteStoredFile($article->attachment_path);
         $article->delete();
 
-        return redirect()->route('articles.index')->with('status', 'Artikel berhasil dihapus.');
+        return redirect()->route('articles.index')->with('status', 'Artikel edukasi berhasil dihapus.');
     }
 
     private function validateArticle(Request $request): array
@@ -132,10 +132,10 @@ class ArticleController extends Controller
             'admin_name' => ['required', 'string', 'max:255'],
         ], [
             'published_at.required' => 'Tanggal wajib diisi.',
-            'title.required' => 'Judul artikel wajib diisi.',
+            'title.required' => 'Judul artikel edukasi wajib diisi.',
             'category_id.required' => 'Kategori wajib dipilih.',
             'category_id.exists' => 'Kategori tidak valid.',
-            'content.required' => 'Isi artikel wajib diisi.',
+            'content.required' => 'Isi artikel edukasi wajib diisi.',
             'status.required' => 'Status wajib dipilih.',
             'status.in' => 'Status harus publish atau arsip.',
             'admin_name.required' => 'Nama admin wajib diisi.',
@@ -162,13 +162,20 @@ class ArticleController extends Controller
             return null;
         }
 
+        $normalizedKey = $this->normalizeCategoryKey($categoryKey);
+
         return Category::query()
             ->get()
-            ->first(function (Category $category) use ($categoryKey) {
-                $normalizedName = strtolower($category->name);
+            ->first(function (Category $category) use ($normalizedKey) {
+                $normalizedName = $this->normalizeCategoryKey($category->name);
 
-                return $normalizedName === $categoryKey
-                    || ($categoryKey === 'emas' && str_contains($normalizedName, 'emas'));
+                return $normalizedName === $normalizedKey
+                    || ($normalizedKey === 'emas' && str_contains($normalizedName, 'emas'));
             });
+    }
+
+    private function normalizeCategoryKey(string $value): string
+    {
+        return str_replace([' ', '_'], '-', strtolower(trim($value)));
     }
 }

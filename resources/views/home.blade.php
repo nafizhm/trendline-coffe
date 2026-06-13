@@ -76,15 +76,20 @@
     return collect([$formattedDate, $formattedTime])->filter()->implode(' • ');
   };
   $categoryCollection = \App\Models\Category::query()->orderBy('name')->get();
-  $resolveCategory = function (string $key) use ($categoryCollection) {
-    return $categoryCollection->first(function ($category) use ($key) {
-      $normalizedName = strtolower($category->name);
+  $normalizeCategoryKey = fn (string $value) => str_replace([' ', '_'], '-', strtolower(trim($value)));
+  $resolveCategory = function (string $key, array $aliases = []) use ($categoryCollection, $normalizeCategoryKey) {
+    $keys = collect(array_merge([$key], $aliases))
+      ->map(fn (string $value) => $normalizeCategoryKey($value))
+      ->all();
 
-      return $normalizedName === $key
-        || ($key === 'emas' && str_contains($normalizedName, 'emas'));
+    return $categoryCollection->first(function ($category) use ($keys, $normalizeCategoryKey) {
+      $normalizedName = $normalizeCategoryKey($category->name);
+
+      return in_array($normalizedName, $keys, true)
+        || (in_array('emas', $keys, true) && str_contains($normalizedName, 'emas'));
     });
   };
-  $educationTabs = collect([
+  $articleEducationTabs = collect([
     'forex' => ['label' => 'Forex'],
     'saham' => ['label' => 'Saham'],
     'emas' => ['label' => 'Emas'],
@@ -104,6 +109,20 @@
             ->take(3)
             ->get()
         : collect(),
+    ];
+  });
+  $videoEducationTabs = collect([
+    'forex' => ['label' => 'Forex', 'aliases' => []],
+    'saham' => ['label' => 'Saham', 'aliases' => []],
+    'video-panduan' => ['label' => 'Video Panduan', 'aliases' => ['video panduan', 'panduan']],
+    'analisa' => ['label' => 'Analisa', 'aliases' => ['analisis']],
+    'teknical' => ['label' => 'Teknical', 'aliases' => ['technical', 'teknikal']],
+  ])->map(function (array $tab, string $key) use ($resolveCategory) {
+    $category = $resolveCategory($key, $tab['aliases']);
+
+    return [
+      'label' => $tab['label'],
+      'category' => $category,
       'videos' => $category
         ? \App\Models\Video::query()
             ->with('category')
@@ -111,7 +130,7 @@
             ->where('category_id', $category->id)
             ->orderByDesc('published_at')
             ->latest('id')
-            ->take(2)
+            ->take(3)
             ->get()
         : collect(),
     ];
@@ -420,7 +439,8 @@
     <!-- Desktop nav links -->
     <div class="hidden md:flex items-center gap-6 text-sm font-medium text-white/80">
       <a href="#home" class="hover:text-[#c9a84c] transition-colors">Beranda</a>
-      <a href="#edukasi" class="hover:text-[#c9a84c] transition-colors">Edukasi</a>
+      <a href="#artikel-edukasi" class="hover:text-[#c9a84c] transition-colors">Artikel Edukasi</a>
+      <a href="#video-edukasi" class="hover:text-[#c9a84c] transition-colors">Video Edukasi</a>
       <a href="#sinyal" class="hover:text-[#c9a84c] transition-colors">Sinyal Harian</a>
       <a href="#komunitas" class="hover:text-[#c9a84c] transition-colors">Komunitas</a>
       <a href="#sosmed" class="hover:text-[#c9a84c] transition-colors">Sosial Media</a>
@@ -433,7 +453,8 @@
   <!-- MOBILE TOP TABS -->
   <div class="md:hidden top-tabs">
     <a href="#home" class="top-tab active">Beranda</a>
-    <a href="#edukasi" class="top-tab">Edukasi</a>
+    <a href="#artikel-edukasi" class="top-tab">Artikel Edukasi</a>
+    <a href="#video-edukasi" class="top-tab">Video Edukasi</a>
     <a href="#sinyal" class="top-tab">Sinyal Harian</a>
     <a href="#komunitas" class="top-tab">Komunitas</a>
     <a href="#sosmed" class="top-tab">Sosial Media</a>
@@ -588,33 +609,32 @@
     </div>
   </section>
 
-  <!-- ===== EDUKASI ===== -->
-  <section id="edukasi" class="py-12 px-4 sec-div">
+  <!-- ===== ARTIKEL EDUKASI ===== -->
+  <section id="artikel-edukasi" class="py-12 px-4 sec-div">
     <div class="max-w-4xl mx-auto">
       <div class="reveal text-center mb-8">
-        <span class="badge-new mb-3 inline-block">EDUCATION</span>
-        <h2 class="font-display font-black text-2xl md:text-3xl">Artikel & Video Edukasi</h2>
-        <p style="color:rgba(255,255,255,0.55); font-size:13px; margin-top:6px;">Konten terbaru dari admin untuk setiap kategori pembelajaran</p>
+        <span class="badge-new mb-3 inline-block">ARTIKEL EDUKASI</span>
+        <h2 class="font-display font-black text-2xl md:text-3xl">Artikel Edukasi</h2>
+        <p style="color:rgba(255,255,255,0.55); font-size:13px; margin-top:6px;">Insight tertulis untuk belajar Forex, Saham, dan Emas secara bertahap.</p>
       </div>
       <div class="reveal flex gap-2 mb-5 justify-center flex-wrap">
-        <button onclick="showEdu('forex')" id="tab-forex" class="tab-active px-5 py-2 rounded-full text-xs font-bold">Forex</button>
-        <button onclick="showEdu('saham')" id="tab-saham" class="top-tab text-xs" style="font-size:12px;">Saham</button>
-        <button onclick="showEdu('emas')" id="tab-emas" class="top-tab text-xs" style="font-size:12px;">Emas</button>
+        <button onclick="showArticleEdu('forex')" id="article-tab-forex" class="tab-active px-5 py-2 rounded-full text-xs font-bold">Forex</button>
+        <button onclick="showArticleEdu('saham')" id="article-tab-saham" class="top-tab text-xs" style="font-size:12px;">Saham</button>
+        <button onclick="showArticleEdu('emas')" id="article-tab-emas" class="top-tab text-xs" style="font-size:12px;">Emas</button>
       </div>
-      @foreach ($educationTabs as $key => $tab)
-        <div id="edu-{{ $key }}" class="{{ $loop->first ? '' : 'hidden ' }}reveal space-y-4">
-          <div class="grid gap-4 lg:grid-cols-[1.35fr_1fr]">
-            <div class="card-glass rounded-[28px] p-5">
-              <div class="mb-4 flex items-center justify-between gap-3">
-                <div>
-                  <p class="text-xs font-semibold uppercase tracking-[0.22em] text-[#c9a84c]">Artikel {{ $tab['label'] }}</p>
-                  <h3 class="mt-1 text-lg font-black text-white">Berita & Insight Terbaru</h3>
-                </div>
-                <a href="{{ route('public.articles.index', ['category' => $key]) }}" class="rounded-full border border-[rgba(201,168,76,0.28)] px-4 py-2 text-xs font-bold text-[#c9a84c] transition hover:bg-white/5">Index Berita</a>
+      @foreach ($articleEducationTabs as $key => $tab)
+        <div id="article-edu-{{ $key }}" class="{{ $loop->first ? '' : 'hidden ' }}reveal space-y-4">
+          <div class="card-glass rounded-[28px] p-5">
+            <div class="mb-4 flex items-center justify-between gap-3">
+              <div>
+                <p class="text-xs font-semibold uppercase tracking-[0.22em] text-[#c9a84c]">Artikel {{ $tab['label'] }}</p>
+                <h3 class="mt-1 text-lg font-black text-white">Berita & Insight Terbaru</h3>
               </div>
-              <div class="space-y-3">
-                @forelse ($tab['articles'] as $article)
-                  <a href="{{ route('public.articles.show', $article) }}" class="block rounded-2xl border border-[rgba(201,168,76,0.14)] bg-[rgba(255,255,255,0.03)] p-4 transition hover:border-[rgba(201,168,76,0.4)] hover:bg-[rgba(255,255,255,0.06)]">
+              <a href="{{ route('public.articles.index', ['category' => $key]) }}" class="rounded-full border border-[rgba(201,168,76,0.28)] px-4 py-2 text-xs font-bold text-[#c9a84c] transition hover:bg-white/5">Semua Artikel</a>
+            </div>
+            <div class="grid gap-3 md:grid-cols-3">
+              @forelse ($tab['articles'] as $article)
+                <a href="{{ route('public.articles.show', $article) }}" class="block rounded-2xl border border-[rgba(201,168,76,0.14)] bg-[rgba(255,255,255,0.03)] p-4 transition hover:border-[rgba(201,168,76,0.4)] hover:bg-[rgba(255,255,255,0.06)]">
                     <div class="flex items-center justify-between gap-3 text-[11px]" style="color:rgba(255,255,255,0.45);">
                       <span>{{ $article->published_at?->format('d M Y') }}</span>
                       <span>{{ $article->admin_name }}</span>
@@ -623,46 +643,55 @@
                     <p class="mt-2 text-xs leading-6 md:text-sm" style="color:rgba(255,255,255,0.58);">
                       {{ \Illuminate\Support\Str::limit(strip_tags($article->content), 120) }}
                     </p>
-                  </a>
-                @empty
-                  <div class="rounded-2xl border border-dashed border-[rgba(201,168,76,0.2)] px-4 py-8 text-center text-sm" style="color:rgba(255,255,255,0.55);">
-                    Belum ada artikel publish untuk kategori {{ $tab['label'] }}.
-                  </div>
-                @endforelse
-              </div>
-            </div>
-            <div class="card-glass rounded-[28px] p-5">
-              <div class="mb-4 flex items-center justify-between gap-3">
-                <div>
-                  <p class="text-xs font-semibold uppercase tracking-[0.22em] text-[#c9a84c]">Video {{ $tab['label'] }}</p>
-                  <h3 class="mt-1 text-lg font-black text-white">Tonton Materi Pilihan</h3>
+                </a>
+              @empty
+                <div class="rounded-2xl border border-dashed border-[rgba(201,168,76,0.2)] px-4 py-8 text-center text-sm md:col-span-3" style="color:rgba(255,255,255,0.55);">
+                  Belum ada artikel publish untuk kategori {{ $tab['label'] }}.
                 </div>
-                <a href="{{ route('public.videos.index', ['category' => $key]) }}" class="rounded-full border border-[rgba(201,168,76,0.28)] px-4 py-2 text-xs font-bold text-[#c9a84c] transition hover:bg-white/5">Index Video</a>
-              </div>
-              <div class="space-y-3">
-                @forelse ($tab['videos'] as $video)
-                  <a href="https://www.youtube.com/watch?v={{ $video->youtube_code }}" target="_blank" rel="noreferrer" class="block overflow-hidden rounded-2xl border border-[rgba(201,168,76,0.14)] bg-[rgba(255,255,255,0.03)] transition hover:border-[rgba(201,168,76,0.4)]">
-                    <img src="https://img.youtube.com/vi/{{ $video->youtube_code }}/hqdefault.jpg" alt="{{ $video->title }}" class="h-36 w-full object-cover">
-                    <div class="p-4">
-                      <div class="text-[11px]" style="color:rgba(255,255,255,0.45);">{{ $video->published_at?->format('d M Y') }} | {{ $video->admin_name }}</div>
-                      <h4 class="mt-2 text-sm font-bold leading-6 text-white">{{ $video->title }}</h4>
-                    </div>
-                  </a>
-                @empty
-                  <div class="rounded-2xl border border-dashed border-[rgba(201,168,76,0.2)] px-4 py-8 text-center text-sm" style="color:rgba(255,255,255,0.55);">
-                    Belum ada video publish untuk kategori {{ $tab['label'] }}.
-                  </div>
-                @endforelse
-              </div>
+              @endforelse
             </div>
           </div>
-          <div class="grid gap-3 md:grid-cols-2">
-            <a href="{{ route('public.articles.index', ['category' => $key]) }}" class="card-glass rounded-2xl px-5 py-4 text-sm font-bold text-white transition hover:border-[#c9a84c]/50">
-              Lihat semua artikel {{ $tab['label'] }} ->
-            </a>
-            <a href="{{ route('public.videos.index', ['category' => $key]) }}" class="card-glass rounded-2xl px-5 py-4 text-sm font-bold text-white transition hover:border-[#c9a84c]/50">
-              Lihat semua video {{ $tab['label'] }} ->
-            </a>
+        </div>
+      @endforeach
+    </div>
+  </section>
+
+  <!-- ===== VIDEO EDUKASI ===== -->
+  <section id="video-edukasi" class="py-12 px-4 sec-div" style="background:#0d1f3c;">
+    <div class="max-w-5xl mx-auto">
+      <div class="reveal text-center mb-8">
+        <span class="badge-new mb-3 inline-block">VIDEO EDUKASI</span>
+        <h2 class="font-display font-black text-2xl md:text-3xl">Video Edukasi</h2>
+        <p style="color:rgba(255,255,255,0.55); font-size:13px; margin-top:6px;">Materi video pilihan berdasarkan kategori pembelajaran.</p>
+      </div>
+      <div class="reveal flex gap-2 mb-5 justify-center flex-wrap">
+        @foreach ($videoEducationTabs as $key => $tab)
+          <button onclick="showVideoEdu('{{ $key }}')" id="video-tab-{{ $key }}" class="{{ $loop->first ? 'tab-active px-5 py-2 rounded-full text-xs font-bold' : 'top-tab text-xs' }}" style="{{ $loop->first ? '' : 'font-size:12px;' }}">{{ $tab['label'] }}</button>
+        @endforeach
+      </div>
+      @foreach ($videoEducationTabs as $key => $tab)
+        <div id="video-edu-{{ $key }}" class="{{ $loop->first ? '' : 'hidden ' }}reveal space-y-4">
+          <div class="mb-4 flex items-center justify-between gap-3">
+            <div>
+              <p class="text-xs font-semibold uppercase tracking-[0.22em] text-[#c9a84c]">Video {{ $tab['label'] }}</p>
+              <h3 class="mt-1 text-lg font-black text-white">Tonton Materi Pilihan</h3>
+            </div>
+            <a href="{{ route('public.videos.index', ['category' => $key]) }}" class="rounded-full border border-[rgba(201,168,76,0.28)] px-4 py-2 text-xs font-bold text-[#c9a84c] transition hover:bg-white/5">Semua Video</a>
+          </div>
+          <div class="grid gap-4 md:grid-cols-3">
+            @forelse ($tab['videos'] as $video)
+              <a href="https://www.youtube.com/watch?v={{ $video->youtube_code }}" target="_blank" rel="noreferrer" class="block overflow-hidden rounded-[28px] border border-[rgba(201,168,76,0.18)] bg-white/5 transition hover:border-[rgba(201,168,76,0.45)]">
+                <img src="https://img.youtube.com/vi/{{ $video->youtube_code }}/hqdefault.jpg" alt="{{ $video->title }}" class="h-44 w-full object-cover">
+                <div class="p-4">
+                  <div class="text-[11px]" style="color:rgba(255,255,255,0.45);">{{ $video->published_at?->format('d M Y') }} | {{ $video->admin_name }}</div>
+                  <h4 class="mt-2 text-sm font-bold leading-6 text-white">{{ $video->title }}</h4>
+                </div>
+              </a>
+            @empty
+              <div class="rounded-2xl border border-dashed border-[rgba(201,168,76,0.2)] px-4 py-8 text-center text-sm md:col-span-3" style="color:rgba(255,255,255,0.55);">
+                Belum ada video publish untuk kategori {{ $tab['label'] }}.
+              </div>
+            @endforelse
           </div>
         </div>
       @endforeach
@@ -947,9 +976,9 @@
     <svg width="22" height="22" fill="currentColor" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
     <span>Beranda</span>
   </a>
-  <a href="#edukasi" id="nav-edukasi">
+  <a href="#artikel-edukasi" id="nav-artikel-edukasi">
     <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
-    <span>Edukasi</span>
+    <span>Artikel</span>
   </a>
   <!-- Center big button -->
   <a href="#sinyal" id="nav-sinyal" style="color:#0a1628;">
@@ -975,16 +1004,31 @@ const revealObserver = new IntersectionObserver((entries) => {
 }, { threshold: 0.08 });
 document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
-// Education tabs
-function showEdu(type) {
+// Article education tabs
+function showArticleEdu(type) {
   ['forex','saham','emas'].forEach(t => {
-    document.getElementById('edu-' + t).classList.add('hidden');
-    const btn = document.getElementById('tab-' + t);
+    document.getElementById('article-edu-' + t).classList.add('hidden');
+    const btn = document.getElementById('article-tab-' + t);
     btn.className = 'top-tab text-xs';
     btn.style.fontSize = '12px';
   });
-  document.getElementById('edu-' + type).classList.remove('hidden');
-  const active = document.getElementById('tab-' + type);
+  document.getElementById('article-edu-' + type).classList.remove('hidden');
+  const active = document.getElementById('article-tab-' + type);
+  active.style.fontSize = '';
+  active.className = 'tab-active px-5 py-2 rounded-full text-xs font-bold';
+}
+
+// Video education tabs
+function showVideoEdu(type) {
+  ['forex','saham','video-panduan','analisa','teknical'].forEach(t => {
+    document.getElementById('video-edu-' + t).classList.add('hidden');
+    const btn = document.getElementById('video-tab-' + t);
+    btn.className = 'top-tab text-xs';
+    btn.style.fontSize = '12px';
+  });
+  document.getElementById('video-edu-' + type).classList.remove('hidden');
+  const active = document.getElementById('video-tab-' + type);
+  active.style.fontSize = '';
   active.className = 'tab-active px-5 py-2 rounded-full text-xs font-bold';
 }
 
@@ -1002,8 +1046,8 @@ function showSignal(type) {
 }
 
 // Active bottom nav on scroll
-const sections = ['home','lokasi','jadwal-terbaru','edukasi','sinyal','komunitas','sosmed'];
-const navIds   = ['home','lokasi','jadwal-terbaru','edukasi','sinyal','komunitas','sosmed'];
+const sections = ['home','lokasi','jadwal-terbaru','artikel-edukasi','video-edukasi','sinyal','komunitas','sosmed'];
+const navIds   = ['home','lokasi','jadwal-terbaru','artikel-edukasi','video-edukasi','sinyal','komunitas','sosmed'];
 const sectionEls = sections.map(id => document.getElementById(id)).filter(Boolean);
 
 const navObserver = new IntersectionObserver((entries) => {

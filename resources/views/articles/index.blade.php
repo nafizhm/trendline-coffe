@@ -5,16 +5,16 @@
         <section class="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm">
             <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                 <div>
-                    <p class="text-sm font-semibold uppercase tracking-[0.24em] text-amber-700">Artikel</p>
-                    <h2 class="mt-2 text-3xl font-black text-slate-900">Kelola Artikel</h2>
-                    <p class="mt-3 text-sm leading-7 text-slate-600">CRUD artikel dibuat tanpa modal agar proses tulis dan edit konten lebih lega, termasuk editor isi artikel.</p>
+                    <p class="text-sm font-semibold uppercase tracking-[0.24em] text-amber-700">Artikel Edukasi</p>
+                    <h2 class="mt-2 text-3xl font-black text-slate-900">Kelola Artikel Edukasi</h2>
+                    <p class="mt-3 text-sm leading-7 text-slate-600">Kelola materi edukasi berbentuk artikel untuk kategori Forex, Saham, dan Emas.</p>
                 </div>
                 <div class="flex items-center gap-3">
                     <div class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-semibold text-slate-700">
                         Total: {{ $articles->count() }}
                     </div>
                     <a href="{{ route('articles.create') }}" class="rounded-2xl bg-slate-900 px-4 py-3 text-sm font-bold text-white transition hover:bg-slate-800">
-                        Tambah Artikel
+                        Tambah Artikel Edukasi
                     </a>
                 </div>
             </div>
@@ -27,7 +27,7 @@
                         <thead class="bg-slate-50">
                             <tr class="text-left text-xs uppercase tracking-[0.22em] text-slate-500">
                                 <th class="px-5 py-4">Tanggal</th>
-                                <th class="px-5 py-4">Judul Artikel</th>
+                                <th class="px-5 py-4">Judul Artikel Edukasi</th>
                                 <th class="px-5 py-4">Kategori</th>
                                 <th class="px-5 py-4">Status</th>
                                 <th class="px-5 py-4">Nama Admin</th>
@@ -63,7 +63,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="6" class="px-5 py-8 text-center text-slate-500">Belum ada artikel.</td>
+                                    <td colspan="6" class="px-5 py-8 text-center text-slate-500">Belum ada artikel edukasi.</td>
                                 </tr>
                             @endforelse
                         </tbody>
