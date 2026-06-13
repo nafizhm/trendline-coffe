@@ -130,56 +130,6 @@
           ->get(),
       ]];
     });
-  if ($articleEducationTabs->isEmpty()) {
-    $articleEducationTabs = collect([
-      'forex' => ['label' => 'Forex'],
-      'saham' => ['label' => 'Saham'],
-      'emas' => ['label' => 'Emas'],
-    ])->map(function (array $tab, string $key) use ($resolveCategory) {
-      $category = $resolveCategory($key, \App\Models\Category::TYPE_ARTICLE);
-
-      return [
-        'label' => $tab['label'],
-        'category' => $category,
-        'articles' => $category
-          ? \App\Models\Article::query()
-              ->with('category')
-              ->where('status', 'publish')
-              ->where('category_id', $category->id)
-              ->orderByDesc('published_at')
-              ->latest('id')
-              ->take(3)
-              ->get()
-          : collect(),
-      ];
-    });
-  }
-  if ($videoEducationTabs->isEmpty()) {
-    $videoEducationTabs = collect([
-      'forex' => ['label' => 'Forex', 'aliases' => []],
-      'saham' => ['label' => 'Saham', 'aliases' => []],
-      'video-panduan' => ['label' => 'Video Panduan', 'aliases' => ['video panduan', 'panduan']],
-      'analisa' => ['label' => 'Analisa', 'aliases' => ['analisis']],
-      'teknical' => ['label' => 'Teknical', 'aliases' => ['technical', 'teknikal']],
-    ])->map(function (array $tab, string $key) use ($resolveCategory) {
-      $category = $resolveCategory($key, \App\Models\Category::TYPE_VIDEO, $tab['aliases']);
-
-      return [
-        'label' => $tab['label'],
-        'category' => $category,
-        'videos' => $category
-          ? \App\Models\Video::query()
-              ->with('category')
-              ->where('status', 'publish')
-              ->where('category_id', $category->id)
-              ->orderByDesc('published_at')
-              ->latest('id')
-              ->take(3)
-              ->get()
-          : collect(),
-      ];
-    });
-  }
 @endphp
 <title>{{ $appName }} - Coffee & Trading Hub</title>
 <script src="https://cdn.tailwindcss.com"></script>
@@ -662,12 +612,14 @@
         <h2 class="font-display font-black text-2xl md:text-3xl">Artikel Edukasi</h2>
         <p style="color:rgba(255,255,255,0.55); font-size:13px; margin-top:6px;">Insight tertulis untuk belajar Forex, Saham, dan Emas secara bertahap.</p>
       </div>
-      <div class="reveal flex gap-2 mb-5 justify-center flex-wrap">
-        <button onclick="showArticleEdu('forex')" id="article-tab-forex" class="tab-active px-5 py-2 rounded-full text-xs font-bold">Forex</button>
-        <button onclick="showArticleEdu('saham')" id="article-tab-saham" class="top-tab text-xs" style="font-size:12px;">Saham</button>
-        <button onclick="showArticleEdu('emas')" id="article-tab-emas" class="top-tab text-xs" style="font-size:12px;">Emas</button>
-      </div>
-      @foreach ($articleEducationTabs as $key => $tab)
+      @if ($articleEducationTabs->isNotEmpty())
+        <div class="reveal flex gap-2 mb-5 justify-center flex-wrap">
+          @foreach ($articleEducationTabs as $key => $tab)
+            <button onclick="showArticleEdu('{{ $key }}')" id="article-tab-{{ $key }}" class="{{ $loop->first ? 'tab-active px-5 py-2 rounded-full text-xs font-bold' : 'top-tab text-xs' }}" style="{{ $loop->first ? '' : 'font-size:12px;' }}">{{ $tab['label'] }}</button>
+          @endforeach
+        </div>
+      @endif
+      @forelse ($articleEducationTabs as $key => $tab)
         <div id="article-edu-{{ $key }}" class="{{ $loop->first ? '' : 'hidden ' }}reveal space-y-4">
           <div class="card-glass rounded-[28px] p-5">
             <div class="mb-4 flex items-center justify-between gap-3">
@@ -699,7 +651,11 @@
             </div>
           </div>
         </div>
-      @endforeach
+      @empty
+        <div class="reveal rounded-[28px] border border-dashed border-[rgba(201,168,76,0.2)] bg-white/5 px-5 py-8 text-center text-sm leading-7" style="color:rgba(255,255,255,0.58);">
+          Belum ada kategori artikel. Tambahkan kategori bertipe Artikel dari menu admin Kategori.
+        </div>
+      @endforelse
     </div>
   </section>
 
@@ -711,12 +667,14 @@
         <h2 class="font-display font-black text-2xl md:text-3xl">Video Edukasi</h2>
         <p style="color:rgba(255,255,255,0.55); font-size:13px; margin-top:6px;">Materi video pilihan berdasarkan kategori pembelajaran.</p>
       </div>
-      <div class="reveal flex gap-2 mb-5 justify-center flex-wrap">
-        @foreach ($videoEducationTabs as $key => $tab)
-          <button onclick="showVideoEdu('{{ $key }}')" id="video-tab-{{ $key }}" class="{{ $loop->first ? 'tab-active px-5 py-2 rounded-full text-xs font-bold' : 'top-tab text-xs' }}" style="{{ $loop->first ? '' : 'font-size:12px;' }}">{{ $tab['label'] }}</button>
-        @endforeach
-      </div>
-      @foreach ($videoEducationTabs as $key => $tab)
+      @if ($videoEducationTabs->isNotEmpty())
+        <div class="reveal flex gap-2 mb-5 justify-center flex-wrap">
+          @foreach ($videoEducationTabs as $key => $tab)
+            <button onclick="showVideoEdu('{{ $key }}')" id="video-tab-{{ $key }}" class="{{ $loop->first ? 'tab-active px-5 py-2 rounded-full text-xs font-bold' : 'top-tab text-xs' }}" style="{{ $loop->first ? '' : 'font-size:12px;' }}">{{ $tab['label'] }}</button>
+          @endforeach
+        </div>
+      @endif
+      @forelse ($videoEducationTabs as $key => $tab)
         <div id="video-edu-{{ $key }}" class="{{ $loop->first ? '' : 'hidden ' }}reveal space-y-4">
           <div class="mb-4 flex items-center justify-between gap-3">
             <div>
@@ -743,7 +701,11 @@
             <a href="{{ route('public.videos.index', ['category' => $key]) }}" class="rounded-full border border-[rgba(201,168,76,0.28)] px-5 py-2.5 text-xs font-bold text-[#c9a84c] transition hover:bg-white/5">Semua Video</a>
           </div>
         </div>
-      @endforeach
+      @empty
+        <div class="reveal rounded-[28px] border border-dashed border-[rgba(201,168,76,0.2)] bg-white/5 px-5 py-8 text-center text-sm leading-7" style="color:rgba(255,255,255,0.58);">
+          Belum ada kategori video. Tambahkan kategori bertipe Video dari menu admin Kategori.
+        </div>
+      @endforelse
     </div>
   </section>
 
