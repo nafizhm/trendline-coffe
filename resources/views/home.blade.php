@@ -989,16 +989,16 @@
     <svg width="22" height="22" fill="currentColor" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
     <span>Beranda</span>
   </a>
-  <a href="#artikel-edukasi" id="nav-artikel-edukasi">
-    <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
-    <span>Artikel</span>
+  <a href="#video-edukasi" id="nav-video-edukasi">
+    <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6.75A2.25 2.25 0 0013.5 4.5h-6A2.25 2.25 0 005.25 6.75v10.5A2.25 2.25 0 007.5 19.5h6a2.25 2.25 0 002.25-2.25V13.5l3.75 2.25v-7.5l-3.75 2.25z"/></svg>
+    <span>Video</span>
   </a>
   <!-- Center big button -->
-  <a href="#sinyal" id="nav-sinyal" style="color:#0a1628;">
+  <a href="#broker" id="nav-broker" style="color:#0a1628;">
     <div class="nav-center-btn">
-      <svg width="22" height="22" fill="currentColor" viewBox="0 0 24 24"><path d="M3.5 18.49l6-6.01 4 4L22 6.92l-1.41-1.41-7.09 7.97-4-4L2 16.99z"/></svg>
+      <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 10.5V6.75a2.25 2.25 0 00-4.5 0v3.75m-3 0h10.5A1.5 1.5 0 0118 12v5.25a1.5 1.5 0 01-1.5 1.5H6A1.5 1.5 0 014.5 17.25V12A1.5 1.5 0 016 10.5zm4.5 3.75h.008v.008H10.5v-.008z"/></svg>
     </div>
-    <span style="color:rgba(255,255,255,0.45);font-size:10px;">Sinyal</span>
+    <span style="color:rgba(255,255,255,0.45);font-size:10px;">Buka Akun</span>
   </a>
   <a href="#komunitas" id="nav-komunitas">
     <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
@@ -1059,8 +1059,8 @@ function showSignal(type) {
 }
 
 // Active bottom nav on scroll
-const sections = ['home','lokasi','jadwal-terbaru','artikel-edukasi','video-edukasi','sinyal','komunitas','sosmed'];
-const navIds   = ['home','lokasi','jadwal-terbaru','artikel-edukasi','video-edukasi','sinyal','komunitas','sosmed'];
+const sections = ['home','lokasi','jadwal-terbaru','artikel-edukasi','video-edukasi','broker','sinyal','komunitas','sosmed'];
+const navIds   = ['home','lokasi','jadwal-terbaru','artikel-edukasi','video-edukasi','broker','sinyal','komunitas','sosmed'];
 const sectionEls = sections.map(id => document.getElementById(id)).filter(Boolean);
 
 const navObserver = new IntersectionObserver((entries) => {
