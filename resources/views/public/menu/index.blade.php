@@ -33,7 +33,7 @@
     font-family:'Inter', sans-serif;
     -webkit-font-smoothing:antialiased;
     min-height:100vh;
-    padding-bottom:56px;
+    padding-bottom:104px;
   }
   ::selection{background:var(--green-tint); color:var(--green-deep);}
   h2,p{margin:0;}
@@ -42,7 +42,7 @@
     position:sticky; top:0; z-index:40;
     background:var(--paper);
     border-bottom:1px solid var(--line);
-    padding:16px 18px 0;
+    padding:8px 18px 0;
   }
   .top-row{ display:flex; align-items:center; justify-content:center; gap:12px; }
   .brand{display:flex; align-items:center; gap:10px;}
@@ -56,10 +56,10 @@
     letter-spacing:.14em; text-transform:uppercase;
     color:var(--ink-soft); margin-top:4px;
   }
-  .spark-wrap{padding:10px 0 4px;}
-  .spark-wrap svg{display:block; width:100%; height:26px;}
+  .spark-wrap{padding:4px 0 0;}
+  .spark-wrap svg{display:block; width:100%; height:20px;}
 
-  .tabs{ display:flex; gap:8px; overflow-x:auto; padding:12px 18px 14px; scrollbar-width:none; }
+  .tabs{ display:flex; gap:8px; overflow-x:auto; padding:8px 18px 10px; scrollbar-width:none; }
   .tabs::-webkit-scrollbar{display:none;}
   .tab{
     flex:0 0 auto; font-family:'Inter', sans-serif; font-weight:600; font-size:12.5px;
@@ -69,7 +69,7 @@
   .tab:hover{border-color:var(--green); color:var(--green-deep);}
   .tab.active{ background:var(--green); border-color:var(--green); color:#fff; }
 
-  main{padding:6px 16px 4px; max-width:640px; margin:0 auto;}
+  main{padding:2px 16px 4px; max-width:640px; margin:0 auto;}
   .section-label{
     display:flex; align-items:center; gap:8px;
     font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:.12em; text-transform:uppercase;
@@ -120,6 +120,30 @@
   footer .note{ font-size:12.5px; color:var(--ink-soft); line-height:1.6; }
   footer .note b{color:var(--green-deep);}
   footer .foot-mark{width:26px; height:20px; margin:14px auto 6px; opacity:.5;}
+
+  .bottom-menu{
+    position:fixed; left:0; right:0; bottom:0; z-index:50;
+    background:rgba(255,255,255,0.96);
+    border-top:1px solid var(--line);
+    box-shadow:0 -10px 30px rgba(32,41,31,0.08);
+    backdrop-filter:blur(12px);
+  }
+  .bottom-menu-inner{
+    max-width:640px; margin:0 auto;
+    display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:10px;
+    padding:10px 16px calc(10px + env(safe-area-inset-bottom));
+  }
+  .bottom-menu a{
+    display:flex; align-items:center; justify-content:center; gap:8px;
+    min-height:48px; border-radius:12px;
+    font-family:'Inter', sans-serif; font-size:13px; font-weight:700;
+    color:var(--green-deep); background:var(--green-tint);
+    border:1px solid rgba(92,143,88,0.18);
+    text-decoration:none; transition:background .15s ease, transform .15s ease;
+  }
+  .bottom-menu a:hover{background:#d9ead6; transform:translateY(-1px);}
+  .bottom-menu a:focus-visible{outline:2px solid var(--green); outline-offset:2px;}
+  .bottom-menu svg{width:18px; height:18px; flex-shrink:0;}
 
   .overlay{
     position:fixed; inset:0; background:rgba(20,26,19,0.5);
@@ -227,6 +251,26 @@
     <polyline points="12,145 58,78 92,115 135,55 185,15" fill="none" stroke="#5C8F58" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
   </svg>
 </footer>
+
+<nav class="bottom-menu" aria-label="Menu bawah">
+  <div class="bottom-menu-inner">
+    <a href="https://trendlinecoffee.com/" target="_blank" rel="noopener noreferrer">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M3.5 10.5 12 3l8.5 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M5.5 9.5V20h13V9.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M9.5 20v-6h5v6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span>Website</span>
+    </a>
+    <a href="https://kuesioner.trendlinecoffee.com/" target="_blank" rel="noopener noreferrer">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M8 6h12M8 12h12M8 18h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        <path d="M4 6h.01M4 12h.01M4 18h.01" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+      </svg>
+      <span>Kuesioner</span>
+    </a>
+  </div>
+</nav>
 
 <div class="overlay" id="overlay"></div>
 <div class="detail-sheet" id="detail-sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title">
