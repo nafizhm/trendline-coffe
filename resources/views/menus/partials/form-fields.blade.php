@@ -55,7 +55,7 @@
     <label class="mb-2 block text-sm font-semibold text-slate-700">Foto Menu</label>
     @if ($isEdit)
         <div id="edit_photo_preview_wrapper" class="{{ $menu?->photo_path ? '' : 'hidden' }} mb-3">
-            <img id="edit_photo_preview" src="{{ $menu?->photo_path ? asset('storage/' . $menu->photo_path) : '' }}" alt="Preview foto menu" class="h-20 w-20 rounded-2xl border border-slate-200 object-cover">
+            <img id="edit_photo_preview" src="{{ $menu?->photo_path ? route('public.menus.photo.show', $menu) : '' }}" alt="Preview foto menu" class="h-20 w-20 rounded-2xl border border-slate-200 object-cover">
         </div>
     @endif
     <input id="{{ $fieldPrefix }}photo" name="photo" type="file" accept="image/*" class="block w-full rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-4 py-4 text-sm text-slate-600 file:mr-4 file:rounded-xl file:border-0 file:bg-slate-900 file:px-4 file:py-2 file:font-semibold file:text-white hover:file:bg-slate-800">

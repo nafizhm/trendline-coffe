@@ -47,7 +47,7 @@
                                     <td class="px-5 py-4">
                                         <div class="h-16 w-16 overflow-hidden rounded-2xl border border-slate-200 bg-slate-100">
                                             @if ($menu->photo_path)
-                                                <img src="{{ asset('storage/' . $menu->photo_path) }}" alt="{{ $menu->name }}" class="h-full w-full object-cover">
+                                                <img src="{{ route('public.menus.photo.show', $menu) }}" alt="{{ $menu->name }}" class="h-full w-full object-cover">
                                             @else
                                                 <div class="flex h-full w-full items-center justify-center text-xs font-bold text-slate-400">No</div>
                                             @endif
@@ -81,7 +81,7 @@
                                                 data-long-description="{{ $menu->long_description }}"
                                                 data-price="{{ $menu->price }}"
                                                 data-hero="{{ $menu->hero }}"
-                                                data-photo-url="{{ $menu->photo_path ? asset('storage/' . $menu->photo_path) : '' }}"
+                                                data-photo-url="{{ $menu->photo_path ? route('public.menus.photo.show', $menu) : '' }}"
                                                 data-tag="{{ $menu->tag }}"
                                                 data-sort-order="{{ $menu->sort_order }}"
                                                 data-status="{{ $menu->status }}"

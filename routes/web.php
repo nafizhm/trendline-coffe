@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'home')->name('home');
 Route::get('/menu', [PublicMenuController::class, 'index'])->name('public.menu.index');
+Route::get('/media/menus/{menu}/photo', [MenuController::class, 'showPhoto'])->name('public.menus.photo.show');
 Route::get('/media/settings/{field}', [SettingController::class, 'showFile'])->name('public.settings.files.show');
 Route::get('/referral-logo/{referralLink}', [ReferralLinkController::class, 'showLogo'])->name('public.referral-links.logo.show');
 Route::get('/media/referral-links/{referralLink}/logo', [ReferralLinkController::class, 'showLogo'])->name('public.referral-links.logo.legacy');

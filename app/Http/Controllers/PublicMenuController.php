@@ -34,7 +34,7 @@ class PublicMenuController extends Controller
                 'longDesc' => $menu->long_description,
                 'price' => $menu->price,
                 'hero' => $menu->hero,
-                'photoUrl' => $menu->photo_path ? asset('storage/' . $menu->photo_path) : null,
+                'photoUrl' => $menu->photo_path ? route('public.menus.photo.show', $menu) : null,
                 'tag' => $menu->tag,
             ]);
 

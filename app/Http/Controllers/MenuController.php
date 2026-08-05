@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\Menu;
 use App\Models\MenuCategory;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class MenuController extends Controller
 {
@@ -41,6 +43,17 @@ class MenuController extends Controller
                 ->get(),
             'heroes' => self::HEROES,
         ]);
+    }
+
+    public function showPhoto(Menu $menu): StreamedResponse
+    {
+        abort_if(blank($menu->photo_path), 404);
+
+        try {
+            return Storage::disk('public')->response($menu->photo_path);
+        } catch (FileNotFoundException) {
+            abort(404);
+        }
     }
 
     public function store(Request $request): RedirectResponse
