@@ -260,14 +260,14 @@
         <path d="M5.5 9.5V20h13V9.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         <path d="M9.5 20v-6h5v6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
-      <span>Website</span>
+      <span>Edukasi Traiding</span>
     </a>
     <a href="https://kuesioner.trendlinecoffee.com/" target="_blank" rel="noopener noreferrer">
       <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
         <path d="M8 6h12M8 12h12M8 18h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
         <path d="M4 6h.01M4 12h.01M4 18h.01" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
       </svg>
-      <span>Kuesioner</span>
+      <span>Saran/Masukan</span>
     </a>
   </div>
 </nav>
