@@ -8,6 +8,9 @@ use App\Http\Controllers\ContentController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DailySignalController;
 use App\Http\Controllers\LatestScheduleController;
+use App\Http\Controllers\MenuCategoryController;
+use App\Http\Controllers\MenuController;
+use App\Http\Controllers\PublicMenuController;
 use App\Http\Controllers\QuestionnaireDataController;
 use App\Http\Controllers\QuestionnaireFrontendController;
 use App\Http\Controllers\QuestionnaireQuestionController;
@@ -17,6 +20,7 @@ use App\Http\Controllers\VideoController;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'home')->name('home');
+Route::get('/menu', [PublicMenuController::class, 'index'])->name('public.menu.index');
 Route::get('/media/settings/{field}', [SettingController::class, 'showFile'])->name('public.settings.files.show');
 Route::get('/referral-logo/{referralLink}', [ReferralLinkController::class, 'showLogo'])->name('public.referral-links.logo.show');
 Route::get('/media/referral-links/{referralLink}/logo', [ReferralLinkController::class, 'showLogo'])->name('public.referral-links.logo.legacy');
@@ -41,6 +45,12 @@ Route::middleware('auth')->group(function () {
         ->except(['show', 'create', 'edit']);
     Route::resource('/categories', CategoryController::class)
         ->parameters(['categories' => 'category'])
+        ->except(['show', 'create', 'edit']);
+    Route::resource('/menu-categories', MenuCategoryController::class)
+        ->parameters(['menu-categories' => 'menuCategory'])
+        ->except(['show', 'create', 'edit']);
+    Route::resource('/menus', MenuController::class)
+        ->parameters(['menus' => 'menu'])
         ->except(['show', 'create', 'edit']);
     Route::put('/articles/{article}/move-up', [ArticleController::class, 'moveUp'])->name('articles.move-up');
     Route::put('/articles/{article}/move-down', [ArticleController::class, 'moveDown'])->name('articles.move-down');

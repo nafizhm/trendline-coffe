@@ -140,7 +140,19 @@
                             <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-slate-700">
                                 <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 6h12M4.5 6h.008v.008H4.5V6zm3 6h12M4.5 12h.008v.008H4.5V12zm3 6h12M4.5 18h.008v.008H4.5V18z"/></svg>
                             </span>
-                            <span class="sidebar-label">Kategori</span>
+                            <span class="sidebar-label">Kategori Edukasi</span>
+                        </a>
+                        <a href="{{ route('menu-categories.index') }}" class="sidebar-link {{ request()->routeIs('menu-categories.*') ? 'active' : '' }} flex items-center gap-2.5 rounded-xl border border-transparent px-3 py-2.5 text-sm font-semibold text-slate-600">
+                            <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-slate-700">
+                                <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 7h16M4 12h16M4 17h10"/><path stroke-linecap="round" stroke-linejoin="round" d="M18 17h2"/></svg>
+                            </span>
+                            <span class="sidebar-label">Kategori Menu</span>
+                        </a>
+                        <a href="{{ route('menus.index') }}" class="sidebar-link {{ request()->routeIs('menus.*') ? 'active' : '' }} flex items-center gap-2.5 rounded-xl border border-transparent px-3 py-2.5 text-sm font-semibold text-slate-600">
+                            <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-slate-700">
+                                <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7 4h10a2 2 0 012 2v12a2 2 0 01-2 2H7a2 2 0 01-2-2V6a2 2 0 012-2z"/><path stroke-linecap="round" stroke-linejoin="round" d="M8.5 8h7M8.5 12h7M8.5 16h4"/></svg>
+                            </span>
+                            <span class="sidebar-label">Menu</span>
                         </a>
                         <a href="{{ route('settings.edit') }}" class="sidebar-link {{ request()->routeIs('settings.*') ? 'active' : '' }} flex items-center gap-2.5 rounded-xl border border-transparent px-3 py-2.5 text-sm font-semibold text-slate-600">
                             <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-slate-700">
