@@ -36,6 +36,7 @@
                                 <th class="px-5 py-4">Kategori</th>
                                 <th class="px-5 py-4">Harga</th>
                                 <th class="px-5 py-4">Ilustrasi</th>
+                                <th class="px-5 py-4">Recommended</th>
                                 <th class="px-5 py-4">Urutan</th>
                                 <th class="px-5 py-4">Status</th>
                                 <th class="px-5 py-4 text-right">Aksi</th>
@@ -63,6 +64,11 @@
                                     <td class="px-5 py-4 text-slate-500">{{ $menu->category?->name ?? '-' }}</td>
                                     <td class="px-5 py-4 font-bold text-emerald-700">Rp {{ number_format($menu->price, 0, ',', '.') }}</td>
                                     <td class="px-5 py-4 font-semibold text-amber-700">{{ $menu->hero }}</td>
+                                    <td class="px-5 py-4">
+                                        <span class="inline-flex rounded-full px-3 py-1 text-xs font-bold {{ $menu->is_recommended ? 'bg-amber-100 text-amber-700' : 'bg-slate-100 text-slate-500' }}">
+                                            {{ $menu->is_recommended ? 'Ya' : 'Tidak' }}
+                                        </span>
+                                    </td>
                                     <td class="px-5 py-4 text-slate-500">{{ $menu->sort_order }}</td>
                                     <td class="px-5 py-4">
                                         <span class="inline-flex rounded-full px-3 py-1 text-xs font-bold {{ $menu->status === 'publish' ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-200 text-slate-600' }}">
@@ -83,6 +89,7 @@
                                                 data-hero="{{ $menu->hero }}"
                                                 data-photo-url="{{ $menu->photo_path ? route('public.menus.photo.show', $menu) : '' }}"
                                                 data-tag="{{ $menu->tag }}"
+                                                data-is-recommended="{{ $menu->is_recommended ? '1' : '0' }}"
                                                 data-sort-order="{{ $menu->sort_order }}"
                                                 data-status="{{ $menu->status }}"
                                                 data-update-url="{{ route('menus.update', $menu) }}"
@@ -99,7 +106,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="8" class="px-5 py-8 text-center text-slate-500">Belum ada item menu.</td>
+                                    <td colspan="9" class="px-5 py-8 text-center text-slate-500">Belum ada item menu.</td>
                                 </tr>
                             @endforelse
                         </tbody>
@@ -230,6 +237,7 @@
                     editPhotoPreviewWrapper.classList.add('hidden');
                 }
                 document.getElementById('edit_tag').value = button.dataset.tag;
+                document.getElementById('edit_is_recommended').value = button.dataset.isRecommended;
                 document.getElementById('edit_sort_order').value = button.dataset.sortOrder;
                 document.getElementById('edit_status').value = button.dataset.status;
                 editMenuForm.action = button.dataset.updateUrl;
@@ -256,7 +264,7 @@
         if (window.jQuery) {
             $('#menusTable').DataTable({
                 pageLength: 10,
-                order: [[2, 'asc'], [5, 'asc']],
+                order: [[2, 'asc'], [6, 'asc']],
                 language: {
                     search: 'Cari:',
                     lengthMenu: 'Tampilkan _MENU_ data',

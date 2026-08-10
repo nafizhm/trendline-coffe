@@ -19,6 +19,11 @@
 /public/build
 /public/hot
 /public/storage
+/storage/app/public/articles/*
+/storage/app/public/latest-schedules/*
+/storage/app/public/menus/*
+/storage/app/public/referral-logos/*
+/storage/app/public/settings/*
 /storage/app/public/*
 !/storage/app/public/.gitignore
 /storage/*.key

@@ -4,6 +4,7 @@
     $oldApplies = (! $isEdit && $currentFormMode === 'create') || ($isEdit && (string) old('menu_id') === (string) $menu?->id);
     $value = fn (string $field, mixed $default = null) => $oldApplies ? old($field, $default) : $default;
     $fieldPrefix = $isEdit ? 'edit_' : 'create_';
+    $recommendedValue = (int) $value('is_recommended', $menu?->is_recommended ?? false);
 @endphp
 
 <div>
@@ -67,6 +68,15 @@
     <label class="mb-2 block text-sm font-semibold text-slate-700">Tag</label>
     <input id="{{ $fieldPrefix }}tag" name="tag" type="text" value="{{ $value('tag', $menu?->tag) }}" placeholder="Populer / Baru" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-900 focus:border-amber-400 focus:outline-none">
     @error('tag') @if ($oldApplies) <p class="mt-2 text-sm text-rose-500">{{ $message }}</p> @endif @enderror
+</div>
+
+<div>
+    <label class="mb-2 block text-sm font-semibold text-slate-700">Recommended</label>
+    <select id="{{ $fieldPrefix }}is_recommended" name="is_recommended" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-900 focus:border-amber-400 focus:outline-none">
+        <option value="0" @selected($recommendedValue === 0)>Tidak</option>
+        <option value="1" @selected($recommendedValue === 1)>Ya</option>
+    </select>
+    @error('is_recommended') @if ($oldApplies) <p class="mt-2 text-sm text-rose-500">{{ $message }}</p> @endif @enderror
 </div>
 
 <div>

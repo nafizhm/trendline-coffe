@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     'hero',
     'photo_path',
     'tag',
+    'is_recommended',
     'sort_order',
     'status',
 ])]
@@ -24,6 +25,7 @@ class Menu extends Model
     {
         return [
             'price' => 'integer',
+            'is_recommended' => 'boolean',
             'sort_order' => 'integer',
         ];
     }

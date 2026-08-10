@@ -235,6 +235,7 @@
 
   <nav class="tabs" id="tabs">
     <button class="tab active" data-cat="semua">Semua</button>
+    <button class="tab" data-cat="__recommended">Recommended</button>
     @foreach ($categories as $category)
       <button class="tab" data-cat="{{ $category->slug }}">{{ $category->name }}</button>
     @endforeach
@@ -315,6 +316,7 @@
   const CAT_LABEL = @json($categories->pluck('name', 'slug'));
   const CAT_STYLE = @json($categories->pluck('style_class', 'slug'));
   const CAT_ORDER = @json($categories->pluck('slug')->values());
+  const RECOMMENDED_CAT = '__recommended';
   const fmt = (n) => 'Rp ' + Number(n).toLocaleString('id-ID');
   const esc = (value) => String(value ?? '').replace(/[&<>"']/g, (m) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
 
@@ -322,14 +324,15 @@
 
   function renderMenu(filter) {
     sectionsEl.innerHTML = '';
-    const cats = filter === 'semua' ? CAT_ORDER : [filter];
+    const cats = filter === 'semua' ? [RECOMMENDED_CAT, ...CAT_ORDER] : [filter];
     cats.forEach(cat => {
-      const items = MENU.filter(m => m.cat === cat);
+      const isRecommendedSection = cat === RECOMMENDED_CAT;
+      const items = MENU.filter(m => isRecommendedSection ? m.isRecommended : m.cat === cat);
       if (!items.length) return;
 
       const label = document.createElement('div');
       label.className = 'section-label';
-      label.textContent = CAT_LABEL[cat];
+      label.textContent = isRecommendedSection ? 'Recommended' : CAT_LABEL[cat];
       sectionsEl.appendChild(label);
 
       const grid = document.createElement('div');

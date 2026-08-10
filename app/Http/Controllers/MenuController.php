@@ -102,6 +102,7 @@ class MenuController extends Controller
             'hero' => ['required', Rule::in(self::HEROES)],
             'photo' => ['nullable', 'image', 'max:4096'],
             'tag' => ['nullable', 'string', 'max:50'],
+            'is_recommended' => ['required', 'boolean'],
             'sort_order' => ['required', 'integer', 'min:0'],
             'status' => ['required', 'in:publish,arsip'],
         ], [
@@ -113,6 +114,7 @@ class MenuController extends Controller
             'hero.required' => 'Ilustrasi wajib dipilih.',
             'photo.image' => 'Foto menu harus berupa gambar.',
             'photo.max' => 'Foto menu maksimal 4 MB.',
+            'is_recommended.required' => 'Pilihan recommended wajib diisi.',
             'status.required' => 'Status wajib dipilih.',
         ]);
     }

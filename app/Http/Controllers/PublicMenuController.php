@@ -36,6 +36,7 @@ class PublicMenuController extends Controller
                 'hero' => $menu->hero,
                 'photoUrl' => $menu->photo_path ? route('public.menus.photo.show', $menu) : null,
                 'tag' => $menu->tag,
+                'isRecommended' => $menu->is_recommended,
             ]);
 
         return view('public.menu.index', [
